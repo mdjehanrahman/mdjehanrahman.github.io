@@ -127,18 +127,18 @@
   .mini{font-size:12px;border:1px solid var(--line);background:#fff;border-radius:5px;padding:1px 8px;margin-left:6px;cursor:pointer;color:var(--accent)}
   .proj .img img{width:100%;height:100%;object-fit:cover;display:block}
 
-  /* version tabs (top right): current = white/black, other = red/white */
   .vtabs{position:fixed;top:16px;right:28px;display:flex;gap:12px;z-index:100;align-items:center}
-  .vtab{display:flex;align-items:center;height:38px;padding:0 18px;text-decoration:none;
-    font-family:Georgia,"Times New Roman",serif;font-size:13.5px;letter-spacing:.3px;border-radius:12px;
-    background:#c62828;color:#fff;border:1.5px solid #c62828;
-    box-shadow:0 3px 10px rgba(0,0,0,.12);transition:height .25s, transform .25s}
-  .vtab{box-shadow:0 4px 0 #8e1c1c;gap:7px}
-  .vtab:hover{text-decoration:none;transform:translateY(-2px);box-shadow:0 6px 0 #8e1c1c}
-  .vtab.on{background:#1e7a46;color:#fff;border-color:#1e7a46;cursor:default;transform:translateY(4px);box-shadow:inset 0 2px 5px rgba(0,0,0,.3);animation:press .7s .4s ease-out both}
-  .vtab.on::before{content:"";width:7px;height:7px;border-radius:50%;background:#fff}
-  .vtab.on:hover{transform:translateY(4px);box-shadow:inset 0 2px 5px rgba(0,0,0,.3)}
-  @keyframes press{0%{transform:translateY(0);box-shadow:0 4px 0 #13502d}55%{transform:translateY(6px);box-shadow:inset 0 3px 6px rgba(0,0,0,.35)}100%{transform:translateY(4px);box-shadow:inset 0 2px 5px rgba(0,0,0,.3)}}
+  .vtabs .vtab{font-family:Georgia,"Times New Roman",serif}
+  .vtab.on{animation:press .7s .4s ease-out both}
+  /* version tabs: Book = green, Simple = red, always. The version you are in sits pressed down. */
+  .vtab{display:flex;align-items:center;height:38px;padding:0 18px;text-decoration:none;white-space:nowrap;color:#fff;
+    font-size:13.5px;letter-spacing:.4px;border-radius:12px;transition:transform .25s, box-shadow .25s}
+  .vtab:first-child{background:#1e7a46;border:1.5px solid #1e7a46;box-shadow:0 4px 0 #13502d}
+  .vtab:last-child{background:#c62828;border:1.5px solid #c62828;box-shadow:0 4px 0 #8e1c1c}
+  .vtab:first-child:not(.on):hover{transform:translateY(-2px);box-shadow:0 6px 0 #13502d;text-decoration:none}
+  .vtab:last-child:not(.on):hover{transform:translateY(-2px);box-shadow:0 6px 0 #8e1c1c;text-decoration:none}
+  .vtab.on,.vtab.on:hover{cursor:default;transform:translateY(4px);box-shadow:inset 0 2px 5px rgba(0,0,0,.32);text-decoration:none}
+  @keyframes press{0%{transform:translateY(0)}55%{transform:translateY(6px)}100%{transform:translateY(4px)}}
   @media (max-width:900px){ .vtabs{top:62px;right:12px;gap:8px} .vtab{font-size:12.5px;padding:0 13px;height:32px} }
 </style>
 </head>

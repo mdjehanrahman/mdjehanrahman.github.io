@@ -139,28 +139,20 @@
   .toc .nav:disabled{opacity:.35;cursor:default}
   .toc .ind{font-size:13.5px;color:#5f6b7a;font-style:italic}
 
-  /* version tabs: current = white/black, other = red/white */
-  .vtabs{position:fixed;right:28px;bottom:22px;display:flex;gap:14px;z-index:100;align-items:center}
-  .vtab{display:flex;align-items:center;height:38px;padding:0 18px;text-decoration:none;white-space:nowrap;
-    font-family:"Playfair Display",Georgia,serif;font-size:13.5px;letter-spacing:.4px;border-radius:12px;
-    background:var(--red);color:#fff;border:1.5px solid var(--red);box-shadow:0 4px 0 #8e1c1c;transition:transform .25s, box-shadow .25s;gap:7px}
-  .vtab:not(.on):hover{transform:translateY(-2px);box-shadow:0 6px 0 #8e1c1c}
-  .vtab.on{background:var(--green);border-color:var(--green);cursor:default;transform:translateY(4px);box-shadow:inset 0 2px 5px rgba(0,0,0,.3)}
-  .vtab.on::before{content:"";width:7px;height:7px;border-radius:50%;background:#fff}
+  .vtabs{position:fixed;top:16px;right:28px;display:flex;gap:14px;z-index:100;align-items:center;font-family:"Playfair Display",Georgia,serif}
+  .vtabs .vtab{font-family:inherit}
+  .vtabs.pop{transform:translateY(-16px) scale(.96)}
+  .vtabs.pop.in{transform:none}
   .vtabs.in .vtab.on{animation:press .7s .35s ease-out both}
-  @keyframes press{0%{transform:translateY(0);box-shadow:0 4px 0 #13502d}55%{transform:translateY(6px);box-shadow:inset 0 3px 6px rgba(0,0,0,.35)}100%{transform:translateY(4px);box-shadow:inset 0 2px 5px rgba(0,0,0,.3)}}
-
-  /* phone page-turn leaf */
-  .mturn{position:fixed;z-index:60;pointer-events:none;perspective:1600px;-webkit-perspective:1600px}
-  .mturn .leaf{position:absolute;inset:0;transform-origin:left center;-webkit-transform-origin:left center;
-    transform-style:preserve-3d;-webkit-transform-style:preserve-3d;transition:transform .8s cubic-bezier(.45,.05,.35,1);will-change:transform}
-  .mturn .leaf .fr{position:absolute;inset:0;overflow:hidden;backface-visibility:hidden;-webkit-backface-visibility:hidden;box-shadow:0 0 14px rgba(0,0,0,.12)}
-  .mturn .leaf .bk{position:absolute;inset:0;background:linear-gradient(90deg,#f1efe8,#fffffd 40%,#f6f4ee);transform:rotateY(180deg);backface-visibility:hidden;-webkit-backface-visibility:hidden}
-  .mturn .leaf .clip{position:absolute;left:0;top:0;transform-origin:0 0}
-  .mturn .leaf .clip .face{transform:none !important}
-  .mturn .leaf .shade{position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.18),rgba(0,0,0,0) 35%,rgba(0,0,0,.06));opacity:0;transition:opacity .85s}
-  .mturn .leaf.turning .shade{opacity:1}
-  body.noanim .sheet,body.noanim .book,body.noanim .viewport,body.noanim #viewport{transition:none !important}
+  /* version tabs: Book = green, Simple = red, always. The version you are in sits pressed down. */
+  .vtab{display:flex;align-items:center;height:38px;padding:0 18px;text-decoration:none;white-space:nowrap;color:#fff;
+    font-size:13.5px;letter-spacing:.4px;border-radius:12px;transition:transform .25s, box-shadow .25s}
+  .vtab:first-child{background:#1e7a46;border:1.5px solid #1e7a46;box-shadow:0 4px 0 #13502d}
+  .vtab:last-child{background:#c62828;border:1.5px solid #c62828;box-shadow:0 4px 0 #8e1c1c}
+  .vtab:first-child:not(.on):hover{transform:translateY(-2px);box-shadow:0 6px 0 #13502d;text-decoration:none}
+  .vtab:last-child:not(.on):hover{transform:translateY(-2px);box-shadow:0 6px 0 #8e1c1c;text-decoration:none}
+  .vtab.on,.vtab.on:hover{cursor:default;transform:translateY(4px);box-shadow:inset 0 2px 5px rgba(0,0,0,.32);text-decoration:none}
+  @keyframes press{0%{transform:translateY(0)}55%{transform:translateY(6px)}100%{transform:translateY(4px)}}
 
   /* mobile-only parts hidden on desktop */
   .mbar,.drawer,.scrim,.hint{display:none}
@@ -171,7 +163,7 @@
   body.m .panel{display:none}
   body.m .vbox{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);overflow:hidden}
   body.m .board,body.m .spine-line,body.m .stack-l,body.m .stack-r{display:none}
-  body.m .face.front,body.m .face.back{border-radius:3px;box-shadow:0 1px 10px rgba(0,0,0,.12)}
+  body.m .face.front,body.m .face.back{border-radius:0;box-shadow:none !important}
   body.m .mbar{display:flex;position:fixed;left:0;right:0;top:0;height:52px;align-items:center;justify-content:space-between;padding:0 14px;z-index:120;
     padding-top:env(safe-area-inset-top)}
   body.m .burger{width:40px;height:40px;border:none;background:#fff;border-radius:10px;box-shadow:0 2px 10px rgba(0,0,0,.12);cursor:pointer;
@@ -179,7 +171,7 @@
   body.m .burger span{display:block;width:18px;height:2px;background:var(--cover);border-radius:2px}
   body.m .mcv{height:34px;padding:0 14px;display:flex;align-items:center;gap:6px;background:var(--blue);color:#fff;text-decoration:none;
     font-family:"Playfair Display",Georgia,serif;font-size:12.5px;border-radius:9px;box-shadow:none}
-  body.m .vtabs{left:50%;right:auto;bottom:calc(18px + env(safe-area-inset-bottom));transform:translateX(-50%);gap:14px}
+  body.m .vtabs{left:50%;right:auto;top:auto;bottom:calc(18px + env(safe-area-inset-bottom));transform:translateX(-50%);gap:14px}
   body.m .vtabs.pop{transform:translateX(-50%) translateY(16px)}
   body.m .vtabs.pop.in{transform:translateX(-50%)}
   body.m .vtab{height:30px;padding:0 13px;font-size:12px;border-radius:10px}
