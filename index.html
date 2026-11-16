@@ -3,475 +3,561 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Md. Jehan Rahman | Urban & Regional Planning</title>
-<meta name="description" content="Md. Jehan Rahman, Urban & Regional Planning student and undergraduate research assistant at RUET, Bangladesh. GIS and remote sensing, groundwater, flood resilience and fire safety.">
+<title>Md. Jehan Rahman | Portfolio</title>
+<meta name="description" content="Portfolio of Md. Jehan Rahman, Urban & Regional Planning, RUET, Bangladesh. GIS and remote sensing, groundwater, flood resilience and fire safety.">
 <link rel="icon" href="images/photo.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
 <style>
   :root{
-    --side:#13283a; --side-ink:#d6e2ea; --side-muted:#8fa6b6;
-    --ink:#1c2731; --muted:#5d6b76; --bg:#f6f7f8; --card:#ffffff;
-    --accent:#0f7b6c; --accent-soft:#e2f2ef; --line:#e3e7ea; --badge:#fff3d6; --badge-ink:#8a5b00;
+    --bg:#ffffff; --cover:#ffefef; --deep:#4f1919; --rose:#a76e6e; --blush:#d2b7b7;
+    --paper:#fffaf8; --ink:#3a2626; --muted:#7d5f5f;
+    --W:420px; --H:600px; --scale:1;
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  html{scroll-behavior:smooth}
-  body{font-family:"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.6;font-size:16px}
-  a{color:var(--accent);text-decoration:none}
-  a:hover{text-decoration:underline}
+  html,body{height:100%}
+  body{background:var(--bg);color:var(--ink);font-family:Lora,Georgia,serif;overflow:hidden;
+    display:flex;flex-direction:column;align-items:center;justify-content:center}
+  a{color:var(--deep)}
 
-  /* Sidebar */
-  aside{position:fixed;top:0;left:0;bottom:0;width:270px;background:var(--side);color:var(--side-ink);padding:36px 26px;overflow-y:auto;z-index:20;transition:transform .25s}
-  .photo{width:150px;height:150px;border-radius:50%;margin:0 auto 18px;background:#2a4357;border:4px solid #2f5068;display:flex;align-items:center;justify-content:center;font-size:44px;color:#9fb6c6;overflow:hidden}
-  .photo img{width:100%;height:100%;object-fit:cover}
-  aside h1{font-size:21px;text-align:center;font-weight:600;color:#fff}
-  aside .role{text-align:center;font-size:13px;color:var(--side-muted);margin:4px 0 22px}
-  aside nav a{display:block;color:var(--side-ink);padding:8px 12px;border-radius:6px;font-size:14.5px}
-  aside nav a:hover,aside nav a.active{background:rgba(255,255,255,.08);text-decoration:none;color:#fff}
-  .social{display:flex;justify-content:center;gap:10px;margin-top:22px;flex-wrap:wrap}
-  .social a{font-size:12px;color:var(--side-ink);border:1px solid #33536b;padding:5px 10px;border-radius:14px}
-  .social a:hover{background:rgba(255,255,255,.08);text-decoration:none}
+  /* ---------- stage ---------- */
+  .viewport{position:relative;width:calc(var(--W) * 2);height:calc(var(--H) + 40px);
+    transform:scale(var(--scale));transform-origin:center center}
+  .scene{position:absolute;left:0;top:40px;width:calc(var(--W) * 2);height:var(--H);perspective:2200px}
 
-  /* Mobile top bar */
-  .topbar{display:none;position:sticky;top:0;background:var(--side);color:#fff;height:56px;align-items:center;justify-content:space-between;padding:0 18px;z-index:30}
-  .topbar button{background:none;border:1px solid #33536b;color:#fff;padding:6px 12px;border-radius:6px;font-size:14px;cursor:pointer}
-
-  main{margin-left:270px;padding:0 48px 60px;max-width:1100px}
-  section{padding:54px 0 10px}
-  h2{font-size:26px;font-weight:600;margin-bottom:22px;padding-bottom:10px;border-bottom:2px solid var(--line);position:relative}
-  h2::after{content:"";position:absolute;left:0;bottom:-2px;width:60px;height:2px;background:var(--accent)}
-  h3{font-size:17px;font-weight:600}
-
-  /* Hero */
-  .hero{padding:64px 0 30px}
-  .hero .kicker{color:var(--accent);font-size:13px;font-weight:600;letter-spacing:2px;text-transform:uppercase}
-  .hero h2{border:none;font-size:38px;margin:8px 0 10px;padding:0}
-  .hero h2::after{display:none}
-  .hero p{font-size:18px;color:var(--muted);max-width:720px}
-  .btns{display:flex;gap:12px;margin-top:24px;flex-wrap:wrap}
-  .btn{padding:10px 20px;border-radius:6px;font-size:15px;font-weight:600}
-  .btn.primary{background:var(--accent);color:#fff}
-  .btn.ghost{border:1.5px solid var(--accent);color:var(--accent)}
-  .btn:hover{text-decoration:none;opacity:.9}
-
-  /* About */
-  .about-grid{display:grid;grid-template-columns:1.6fr 1fr;gap:28px}
-  .panel{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:22px}
-  .panel h3{margin-bottom:10px}
-  .interests{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
-  .interests span{background:var(--accent-soft);color:var(--accent);font-size:13px;padding:5px 11px;border-radius:16px}
-  .info dt{font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-top:10px}
-  .info dt:first-child{margin-top:0}
-  .news{list-style:none;margin-top:6px}
-  .news li{display:grid;grid-template-columns:86px 1fr;gap:10px;padding:9px 0;border-bottom:1px dashed var(--line);font-size:15px}
-  .news li:last-child{border:none}
-  .news .date{font-weight:600;color:var(--accent);font-size:13px;padding-top:2px}
-
-  /* Entries (education, appointments, awards) */
-  .entry{display:grid;grid-template-columns:58px 1fr;gap:16px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px 20px;margin-bottom:14px}
-  .logo{width:58px;height:58px;border-radius:10px;background:var(--accent-soft);color:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;overflow:hidden}
-  .logo img{width:100%;height:100%;object-fit:contain}
-  .entry .org{color:var(--muted);font-size:15px}
-  .entry .when{font-size:13px;color:var(--muted);margin-top:2px}
-  .entry ul{margin:8px 0 0 18px;font-size:15px}
-
-  /* Publications */
-  .pub-group{margin-bottom:26px}
-  .pub-group h3{font-size:15px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:12px}
-  .pub-group h3 .count{background:var(--accent);color:#fff;border-radius:10px;padding:1px 8px;font-size:12px;margin-left:6px}
-  details.pub{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 18px;margin-bottom:10px}
-  details.pub summary{cursor:pointer;list-style:none;display:grid;grid-template-columns:32px 1fr auto;gap:10px;align-items:start}
-  details.pub summary::-webkit-details-marker{display:none}
-  .num{width:26px;height:26px;border-radius:50%;background:var(--side);color:#fff;font-size:12px;display:flex;align-items:center;justify-content:center;margin-top:2px}
-  .pub .t{font-weight:600}
-  .pub .a{font-size:14px;color:var(--muted)}
-  .pub .a b{color:var(--ink)}
-  .status{font-size:12px;background:var(--badge);color:var(--badge-ink);padding:3px 9px;border-radius:12px;white-space:nowrap}
-  .pub .more{font-size:13px;color:var(--accent);margin-top:4px}
-  details[open] .more{display:none}
-  .pub .abs{margin:12px 0 2px 42px;font-size:15px;color:var(--muted);border-left:3px solid var(--accent-soft);padding-left:12px}
-
-  /* Projects */
-  .proj-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:18px}
-  .proj{background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden}
-  .proj .img{height:150px;background:linear-gradient(135deg,#cfe6e1,#e7eef3);display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:12px}
-  .proj .img img{width:100%;height:100%;object-fit:cover}
-  .proj .b{padding:16px 18px 20px}
-  .proj .k{font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--accent);font-weight:600;margin-bottom:4px}
-  .proj p{font-size:14.5px;color:var(--muted);margin-top:6px}
-
-  /* Gallery */
-  .gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
-  figure{background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden}
-  figure .img{height:150px;background:linear-gradient(135deg,#e7eef3,#d9e8e4);display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:12px}
-  figure img{width:100%;height:150px;object-fit:cover;display:block}
-  figcaption{font-size:13.5px;padding:10px 12px;color:var(--muted)}
-
-  /* Contact */
-  .contact{background:var(--side);color:var(--side-ink);border-radius:12px;padding:34px;text-align:center;margin-top:10px}
-  .contact h2{color:#fff;border:none;display:inline-block}
-  .contact h2::after{left:50%;transform:translateX(-50%)}
-  .contact p{margin-bottom:18px}
-  .contact .btn.ghost{border-color:#7fc8bd;color:#bfe7e0}
-  .contact .btns{justify-content:center}
-  footer{text-align:center;font-size:13px;color:var(--muted);padding:30px 0 0}
-
-  @media (max-width:900px){
-    .topbar{display:flex}
-    aside{transform:translateX(-100%);top:56px}
-    aside.open{transform:none}
-    main{margin-left:0;padding:0 20px 50px}
-    .about-grid{grid-template-columns:1fr}
-    .hero h2{font-size:30px}
+  /* ---------- intro: closed 3D book ---------- */
+  .intro{position:absolute;left:calc(var(--W) / 2);top:0;width:var(--W);height:var(--H);perspective:1600px;z-index:50}
+  .cb{position:relative;width:100%;height:100%;transform-style:preserve-3d;
+    transform:rotateY(-180deg) rotateX(8deg) scale(.82)}
+  .cb.spin{animation:spin 2.4s cubic-bezier(.45,.05,.25,1) forwards}
+  @keyframes spin{
+    0%{transform:rotateY(-180deg) rotateX(8deg) scale(.82)}
+    25%{transform:rotateY(-180deg) rotateX(8deg) scale(.86)}
+    100%{transform:rotateY(0deg) rotateX(0deg) scale(1)}
   }
-  button.btn{cursor:pointer;background:none;font-family:inherit}
-  .contact button.btn.ghost{border:1.5px solid #7fc8bd;color:#bfe7e0}
-  .mini{font-size:12px;border:1px solid var(--line);background:#fff;border-radius:5px;padding:1px 8px;margin-left:6px;cursor:pointer;color:var(--accent)}
-  .proj .img img{width:100%;height:100%;object-fit:cover;display:block}
+  .cb > div{position:absolute;top:0;height:100%;backface-visibility:hidden}
+  .cb-front,.cb-back{left:0;width:100%}
+  .cb-front{transform:translateZ(14px)}
+  .cb-back{transform:rotateY(180deg) translateZ(14px)}
+  .cb-spine{left:-14px;width:28px;transform:rotateY(-90deg);
+    background:linear-gradient(90deg,#3d1212,var(--deep) 40%,#6a2a2a 60%,var(--deep));}
+  .cb-edge{left:calc(var(--W) - 14px);width:28px;transform:rotateY(90deg);
+    background:repeating-linear-gradient(90deg,#f6eceb 0 2px,#e8d9d7 2px 3px);}
+  .intro.gone{display:none}
+
+  /* ---------- the book ---------- */
+  .book{position:absolute;inset:0;transition:transform 1s cubic-bezier(.6,.1,.25,1);visibility:hidden}
+  .book.show{visibility:visible}
+  .book.closed{transform:translateX(calc(var(--W) / -2))}
+  .book.end{transform:translateX(calc(var(--W) / 2))}
+  .sheet{position:absolute;left:var(--W);top:0;width:var(--W);height:var(--H);
+    transform-origin:left center;transform-style:preserve-3d;
+    transition:transform 1s cubic-bezier(.55,.05,.3,1)}
+  .sheet.flipped{transform:rotateY(-180deg)}
+  .face{position:absolute;inset:0;backface-visibility:hidden;overflow:hidden;background:var(--paper)}
+  .face.front{border-radius:0 6px 6px 0;box-shadow:inset 18px 0 22px -18px rgba(79,25,25,.28), 6px 6px 18px rgba(79,25,25,.12)}
+  .face.back{transform:rotateY(180deg);border-radius:6px 0 0 6px;box-shadow:inset -18px 0 22px -18px rgba(79,25,25,.28), -6px 6px 18px rgba(79,25,25,.12)}
+  .page{position:absolute;inset:0;padding:44px 40px 46px;cursor:pointer}
+  .front .page{padding-left:46px}
+  .back .page{padding-right:46px}
+  .pno{position:absolute;bottom:18px;font-size:12px;color:var(--rose);letter-spacing:1px}
+  .front .pno{right:30px}
+  .back .pno{left:30px}
+
+  /* typography */
+  .kicker{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--rose);margin-bottom:6px}
+  h2{font-family:"Playfair Display",Georgia,serif;font-weight:700;color:var(--deep);font-size:30px;line-height:1.1;margin-bottom:6px}
+  .rule{width:46px;height:2px;background:var(--rose);margin:10px 0 18px}
+  h3{font-family:"Playfair Display",Georgia,serif;color:var(--deep);font-size:16.5px;line-height:1.3;font-weight:700}
+  p,li{font-size:13.6px;line-height:1.6}
+  .muted{color:var(--muted)}
+  .small{font-size:12.4px}
+  .entry{margin-bottom:15px}
+  .entry .meta{font-size:12.2px;color:var(--rose);font-style:italic;margin:1px 0 4px}
+  .entry ul{margin-left:16px}
+  .entry li{font-size:12.8px;line-height:1.5}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+  .chips span{font-size:11.6px;background:var(--cover);border:1px solid var(--blush);color:var(--deep);padding:3px 9px;border-radius:12px}
+  .pub{margin-bottom:11px;padding-left:12px;border-left:2px solid var(--blush)}
+  .pub .t{font-size:13.2px;font-weight:600;color:var(--ink);line-height:1.4}
+  .pub .a{font-size:11.8px;color:var(--muted);line-height:1.45;margin-top:2px}
+  .tag{display:inline-block;font-size:10.5px;letter-spacing:.5px;padding:1px 7px;border-radius:8px;margin-top:3px;background:var(--cover);color:var(--deep);border:1px solid var(--blush)}
+  .tag.ok{background:var(--deep);color:#fff;border-color:var(--deep)}
+  .proj{display:grid;grid-template-columns:118px 1fr;gap:14px;margin-bottom:16px;align-items:start}
+  .proj img{width:118px;height:78px;object-fit:cover;border-radius:6px;border:1px solid var(--blush);display:block}
+  .proj .k{font-size:10.5px;letter-spacing:2px;text-transform:uppercase;color:var(--rose)}
+  .proj h3{font-size:15px;margin:1px 0 3px}
+  .proj p{font-size:12.4px;line-height:1.5;color:var(--muted)}
+  .facts{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:12.8px;margin-top:14px;padding:12px 14px;background:var(--cover);border-radius:8px}
+  .facts b{color:var(--deep);font-weight:600}
+
+  /* cover */
+  .cover{background:var(--cover);cursor:pointer}
+  .cover .frame{position:absolute;inset:18px;border:1.5px solid var(--rose);border-radius:4px}
+  .cover .frame::after{content:"";position:absolute;inset:6px;border:.5px solid var(--blush);border-radius:2px}
+  .cover .inner{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px}
+  .cover .ph{width:150px;height:150px;border-radius:50%;overflow:hidden;border:5px solid #fff;box-shadow:0 0 0 1.5px var(--rose),0 10px 24px rgba(79,25,25,.18);margin-bottom:26px}
+  .cover .ph img{width:100%;height:100%;object-fit:cover}
+  .cover .series{font-size:11px;letter-spacing:4px;text-transform:uppercase;color:var(--rose);margin-bottom:12px}
+  .cover h1{font-family:"Playfair Display",Georgia,serif;color:var(--deep);font-size:38px;line-height:1.1;font-weight:700}
+  .cover .orn{color:var(--rose);margin:14px 0;font-size:14px;letter-spacing:8px}
+  .cover .sub{font-style:italic;color:var(--muted);font-size:14.5px;line-height:1.6}
+  .cover .foot{position:absolute;bottom:42px;left:0;right:0;text-align:center;font-size:11px;letter-spacing:3px;color:var(--rose);text-transform:uppercase}
+  .cover .hint{position:absolute;bottom:22px;right:30px;font-size:11px;color:var(--rose);font-style:italic}
+
+  /* endpapers */
+  .endpaper{background:
+     radial-gradient(circle at 25% 25%,rgba(167,110,110,.18) 0 2px,transparent 3px) 0 0/22px 22px,
+     radial-gradient(circle at 75% 75%,rgba(167,110,110,.18) 0 2px,transparent 3px) 0 0/22px 22px,
+     var(--cover)}
+  .toc{list-style:none;margin-top:6px;background:rgba(255,255,255,.75);border-radius:8px;padding:14px 18px}
+  .toc li{display:flex;align-items:baseline;gap:8px;padding:7px 0;font-size:14.5px}
+  .toc a{text-decoration:none;color:var(--ink);cursor:pointer}
+  .toc a:hover{color:var(--rose)}
+  .toc .dots{flex:1;border-bottom:1.5px dotted var(--blush);transform:translateY(-4px)}
+  .toc .n{color:var(--rose);font-size:13px}
+
+  /* contact */
+  .btn{display:inline-block;padding:8px 14px;border-radius:6px;font-size:12.8px;text-decoration:none;border:1.5px solid var(--deep);color:var(--deep);background:#fff;cursor:pointer;font-family:inherit;margin:0 6px 8px 0}
+  .btn.solid{background:var(--deep);color:#fff}
+  .btn:hover{opacity:.85}
+  .quote{font-family:"Playfair Display",Georgia,serif;font-style:italic;color:var(--deep);font-size:20px;line-height:1.45}
+
+  /* ---------- bookmarks ---------- */
+  .marks{position:absolute;left:0;top:0;width:calc(var(--W) * 2);height:52px;z-index:5;pointer-events:none;
+    opacity:0;transition:opacity .6s .4s}
+  .marks.show{opacity:1}
+  .mark{position:absolute;top:2px;width:86px;height:50px;pointer-events:auto;cursor:pointer;border:none;
+    font-family:Lora,Georgia,serif;font-size:11.5px;letter-spacing:.3px;color:#fff;padding:7px 4px 0;
+    border-radius:6px 6px 0 0;transition:transform .35s, filter .2s;text-align:center;line-height:1.15;
+    box-shadow:0 -2px 6px rgba(79,25,25,.12)}
+  .mark:hover{transform:translateY(-6px)}
+  .mark.active{transform:translateY(-10px);filter:brightness(1.05);box-shadow:0 -4px 10px rgba(79,25,25,.22)}
+  .mark.c1{background:var(--deep)} .mark.c2{background:var(--rose)} .mark.c3{background:#8a4a4a} .mark.c4{background:#c29696}
+
+  /* ---------- controls ---------- */
+  .controls{display:flex;align-items:center;gap:14px;margin-top:calc((var(--H) + 40px) * (var(--scale) - 1) / 2 + 30px);font-size:13px;color:var(--muted);
+    opacity:0;transition:opacity .6s .6s;position:relative;z-index:60}
+  .controls.show{opacity:1}
+  .controls button.nav{width:40px;height:40px;border-radius:50%;border:1.5px solid var(--blush);background:#fff;color:var(--deep);font-size:18px;cursor:pointer}
+  .controls button.nav:hover{background:var(--cover)}
+  .controls button.nav:disabled{opacity:.35;cursor:default}
+  .controls .ind{min-width:110px;text-align:center;font-style:italic}
+  .controls a{font-size:12.5px;color:var(--rose)}
+  .mobile-note{display:none;position:fixed;top:10px;left:10px;right:10px;background:var(--cover);border:1px solid var(--blush);
+    border-radius:8px;padding:8px 12px;font-size:12.5px;text-align:center;z-index:80}
+  .mobile-note a{color:var(--deep);font-weight:600}
+  @media (max-width:720px){.mobile-note{display:block}}
+  @media (prefers-reduced-motion:reduce){.sheet,.book{transition:none}}
+
+  /* hard cover boards behind the open book */
+  .board{position:absolute;top:-14px;height:calc(var(--H) + 28px);width:calc(var(--W) + 14px);background:var(--cover);
+    border:1.5px solid var(--blush);box-shadow:0 18px 40px rgba(79,25,25,.18);opacity:0;transition:opacity .4s}
+  .board.l{left:-14px;border-radius:10px 2px 2px 10px}
+  .board.r{left:var(--W);border-radius:2px 10px 10px 2px;
+    box-shadow:0 18px 40px rgba(79,25,25,.18), inset -3px 0 0 #f7e6e6}
+  .book.open .board{opacity:1}
+  .spine-line{position:absolute;left:calc(var(--W) - 3px);top:-14px;width:6px;height:calc(var(--H) + 28px);
+    background:linear-gradient(90deg,#c9a5a5,#a76e6e,#c9a5a5);opacity:0;transition:opacity .4s;z-index:0}
+  .book.open .spine-line{opacity:1}
+  .stack-r{position:absolute;left:calc(var(--W) * 2 - 2px);top:4px;width:6px;height:calc(var(--H) - 8px);
+    background:repeating-linear-gradient(90deg,#fffaf8 0 1px,#ead7d6 1px 2px);border-radius:0 3px 3px 0;opacity:0;transition:opacity .4s}
+  .stack-l{position:absolute;left:-4px;top:4px;width:6px;height:calc(var(--H) - 8px);
+    background:repeating-linear-gradient(90deg,#ead7d6 0 1px,#fffaf8 1px 2px);border-radius:3px 0 0 3px;opacity:0;transition:opacity .4s}
+  .book.open .stack-r,.book.open .stack-l{opacity:1}
 </style>
 </head>
 <body>
 
-<div class="topbar">
-  <strong>Jehan Rahman</strong>
-  <button id="menuBtn" aria-label="Open menu">Menu</button>
-</div>
+<div class="mobile-note">On a phone the book is small. <a href="classic.html">Open the simple version</a></div>
 
-<aside id="side">
-  <div class="photo"><img src="images/photo.jpg" alt="Md. Jehan Rahman"></div>
-  <h1>Md. Jehan Rahman</h1>
-  <div class="role">Urban &amp; Regional Planning · RUET</div>
-  <nav id="nav">
-    <a href="#about">About</a>
-    <a href="#education">Education</a>
-    <a href="#experience">Experience</a>
-    <a href="#publications">Publications</a>
-    <a href="#research">Research Projects</a>
-    <a href="#presentations">Presentations &amp; Certifications</a>
-    <a href="#awards">Awards</a>
-    <a href="#skills">Skills</a>
-    <a href="#contact">Contact</a>
-  </nav>
-  <div class="social">
-    <a href="https://www.linkedin.com/in/jehanrahmanofficial/" target="_blank" rel="noopener">LinkedIn</a>
-    <a href="https://www.researchgate.net/profile/Md-Jehan-Rahman" target="_blank" rel="noopener">ResearchGate</a>
-    <a href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=jehan2723@gmail.com" target="_blank" rel="noopener">Email</a>
-  </div>
-</aside>
+<div class="viewport" id="viewport">
+  <div class="marks" id="marks"></div>
 
-<main>
-
-  <div class="hero" id="top">
-    <div class="kicker">Urban Planner · Undergraduate Researcher</div>
-    <h2>Md. Jehan Rahman</h2>
-    <p>Urban &amp; Regional Planning student at Rajshahi University of Engineering &amp; Technology (RUET) and undergraduate research assistant, working on GIS and remote sensing, groundwater, flood resilience and fire safety in Bangladesh.</p>
-    <div class="btns">
-      <!-- Put your CV in the same folder as this file and name it cv.pdf -->
-      <a class="btn primary" href="cv.pdf">Download CV</a>
-      <a class="btn ghost" href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=jehan2723@gmail.com" target="_blank" rel="noopener">Email Me</a>
+  <div class="scene">
+    <!-- Intro closed book -->
+    <div class="intro" id="intro">
+      <div class="cb" id="cb">
+        <div class="cb-front face cover" id="cbFront"></div>
+        <div class="cb-back face cover" id="cbBack"></div>
+        <div class="cb-spine"></div>
+        <div class="cb-edge"></div>
+      </div>
     </div>
-  </div>
 
-  <section id="about">
-    <h2>About Me</h2>
-    <div class="about-grid">
-      <div>
-        <p>I am a final-year undergraduate in Urban &amp; Regional Planning at RUET, Bangladesh. My work combines field research with GIS and remote sensing to study how cities and regions can manage risk: groundwater depletion in the Barind Tract, flood-resilient housing for river island communities, solid waste in urban rivers, and fire safety in crowded commercial buildings.</p>
-        <p style="margin-top:12px">I have worked as an undergraduate research assistant on two groundwater projects, interned on an upazila development plan with Sheltech Consultants, and co-authored a peer-reviewed journal article. My undergraduate thesis studies fire evacuation planning for RDA Market, Rajshahi.</p>
-        <div class="panel" style="margin-top:20px">
-          <h3>Principal Interests</h3>
-          <div class="interests">
-            <span>Urban &amp; regional planning</span>
-            <span>Planned urban development</span>
-            <span>Groundwater conservation &amp; valuation</span>
-            <span>Flood resilience</span>
-            <span>Solid waste management</span>
-            <span>Fire safety in the built environment</span>
-            <span>GIS &amp; remote sensing</span>
+    <div class="book closed" id="book">
+      <div class="board l"></div><div class="board r"></div><div class="spine-line"></div><div class="stack-l"></div><div class="stack-r"></div>
+
+      <!-- Sheet 0: cover | contents -->
+      <div class="sheet">
+        <div class="face front cover" id="coverFace">
+          <div class="frame"></div>
+          <div class="inner">
+            <div class="ph"><img src="images/photo.jpg" alt="Md. Jehan Rahman"></div>
+            <div class="series">Portfolio</div>
+            <h1>Md. Jehan<br>Rahman</h1>
+            <div class="orn">✦ ✦ ✦</div>
+            <div class="sub">Urban &amp; Regional Planning<br>GIS · Groundwater · Flood Resilience · Fire Safety</div>
+          </div>
+          <div class="foot">RUET · Bangladesh · 2026</div>
+          <div class="hint">Click to open →</div>
+        </div>
+        <div class="face back endpaper">
+          <div class="page">
+            <div class="kicker">Inside this book</div>
+            <h2>Contents</h2>
+            <div class="rule"></div>
+            <ul class="toc">
+              <li><a data-page="1">About Me</a><span class="dots"></span><span class="n">1</span></li>
+              <li><a data-page="2">Education</a><span class="dots"></span><span class="n">2</span></li>
+              <li><a data-page="3">Experience</a><span class="dots"></span><span class="n">3</span></li>
+              <li><a data-page="5">Publications</a><span class="dots"></span><span class="n">5</span></li>
+              <li><a data-page="7">Research Projects</a><span class="dots"></span><span class="n">7</span></li>
+              <li><a data-page="9">Presentations &amp; Awards</a><span class="dots"></span><span class="n">9</span></li>
+              <li><a data-page="10">Contact</a><span class="dots"></span><span class="n">10</span></li>
+              <li><a data-page="11">Looking Ahead</a><span class="dots"></span><span class="n">11</span></li>
+            </ul>
+            <p class="small muted" style="margin-top:16px;font-style:italic">Click a page edge, use the arrows, or pick a bookmark above to turn pages.</p>
           </div>
         </div>
       </div>
-      <div>
-        <div class="panel">
-          <h3>Quick Info</h3>
-          <dl class="info">
-            <dt>Degree</dt><dd>BURP, RUET (2023 – 2027, expected)</dd>
-            <dt>CGPA</dt><dd>3.73 / 4.00</dd>
-            <dt>Email</dt><dd>jehan2723@gmail.com <button class="mini copy-email" type="button">Copy</button></dd>
-            <dt>Languages</dt><dd>Bengali (native), English (fluent), Hindi (speaking)</dd>
-          </dl>
+
+      <!-- Sheet 1: about | education -->
+      <div class="sheet">
+        <div class="face front"><div class="page">
+          <div class="kicker">Chapter one</div>
+          <h2>About Me</h2>
+          <div class="rule"></div>
+          <p>I am a final-year undergraduate in Urban &amp; Regional Planning at Rajshahi University of Engineering &amp; Technology (RUET), Bangladesh.</p>
+          <p style="margin-top:10px">My work combines field research with GIS and remote sensing to study how cities and regions manage risk: groundwater depletion in the Barind Tract, flood-resilient housing for river island communities, solid waste in urban rivers, and fire safety in crowded commercial buildings.</p>
+          <div class="facts">
+            <b>Degree</b><span>BURP, RUET (2023–2027, expected)</span>
+            <b>CGPA</b><span>3.73 / 4.00</span>
+            <b>Languages</b><span>Bengali, English, Hindi</span>
+          </div>
+          <div class="chips">
+            <span>Urban planning</span><span>GIS &amp; remote sensing</span><span>Groundwater</span><span>Flood resilience</span><span>Fire safety</span><span>Solid waste</span>
+          </div>
+          <div class="pno">1</div>
+        </div></div>
+        <div class="face back"><div class="page">
+          <div class="kicker">Chapter two</div>
+          <h2>Education</h2>
+          <div class="rule"></div>
+          <div class="entry">
+            <h3>Bachelor of Urban &amp; Regional Planning</h3>
+            <div class="meta">Rajshahi University of Engineering &amp; Technology · 2023–2027 (expected)</div>
+            <p class="small">CGPA 3.73 / 4.00</p>
+            <p class="small muted">Thesis: Fire Evacuation Planning of RDA Market, Rajshahi (Supervisor: Nazia Hossain)</p>
+          </div>
+          <div class="entry">
+            <h3>Higher Secondary Certificate, Science</h3>
+            <div class="meta">Khulna Public College, Khulna · 2021</div>
+            <p class="small">GPA 5.00 / 5.00</p>
+          </div>
+          <div class="entry">
+            <h3>Secondary School Certificate, Science</h3>
+            <div class="meta">Khulna Public College, Khulna · 2019</div>
+            <p class="small">GPA 5.00 / 5.00</p>
+          </div>
+          <div class="pno">2</div>
+        </div></div>
+      </div>
+
+      <!-- Sheet 2: experience | experience + skills -->
+      <div class="sheet">
+        <div class="face front"><div class="page">
+          <div class="kicker">Chapter three</div>
+          <h2>Experience</h2>
+          <div class="rule"></div>
+          <div class="entry">
+            <h3>Undergraduate Research Assistant</h3>
+            <div class="meta">Dept. of URP, RUET · Oct 2025 – Jun 2026</div>
+            <p class="small"><i>Valuing Ecosystem Services Lost Due to Groundwater Depletion in the Barind Tract</i> (Supervisor: Sumita Roy)</p>
+            <ul><li>Field surveys, site visits, FGDs and KIIs</li><li>LULC maps with GIS and remote sensing</li><li>Data cleaning and literature review</li></ul>
+          </div>
+          <div class="entry">
+            <h3>Undergraduate Research Assistant</h3>
+            <div class="meta">Dept. of URP, RUET · Oct 2025 – Jun 2026</div>
+            <p class="small"><i>Valuing Economic and Environmental Externalities of Groundwater Extraction in the Barind Tract</i> (Supervisor: Md. Sakib Zubayer)</p>
+            <ul><li>Field visits, surveys, FGDs and KIIs</li><li>Data preprocessing and analysis support</li></ul>
+          </div>
+          <div class="pno">3</div>
+        </div></div>
+        <div class="face back"><div class="page">
+          <div class="entry" style="margin-top:4px">
+            <h3>Intern</h3>
+            <div class="meta">Sheltech Consultants (Pvt.) Ltd., Dhaka · Feb – Mar 2026</div>
+            <p class="small"><i>Review &amp; Update of Nawabganj Upazila Development Plan (UTMIDP / UMPR-2)</i></p>
+            <ul><li>Digitized physical features; managed 2D/3D planning databases</li><li>Supported a data-sharing workshop, public hearings and community engagement</li></ul>
+          </div>
+          <div class="kicker" style="margin-top:24px">Toolkit</div>
+          <h2 style="font-size:24px">Technical Skills</h2>
+          <div class="rule"></div>
+          <div class="facts" style="margin-top:0">
+            <b>Geospatial</b><span>GIS, LULC mapping, digitization, drone data</span>
+            <b>Methods</b><span>Surveys, FGDs, KIIs, PRISMA review</span>
+            <b>Analysis</b><span>SPSS, ATLAS.ti</span>
+            <b>Design</b><span>AutoCAD, SketchUp, Canva, MS Office</span>
+          </div>
+          <div class="pno">4</div>
+        </div></div>
+      </div>
+
+      <!-- Sheet 3: publications | publications -->
+      <div class="sheet">
+        <div class="face front"><div class="page">
+          <div class="kicker">Chapter four</div>
+          <h2>Publications</h2>
+          <div class="rule"></div>
+          <p class="kicker" style="margin-bottom:8px">Journal article</p>
+          <div class="pub">
+            <div class="t">A critical evaluation of Purbachal New Town's planning and implementation for effective decentralization of Dhaka</div>
+            <div class="a">Mahfuj, I. I., Tamim, N. F., Sultana, N., &amp; <b>Rahman, M. J.</b> (2026). <i>City and Environment Interactions</i>, 30, 100358.</div>
+            <a class="tag ok" href="https://doi.org/10.1016/j.cacint.2026.100358" target="_blank" rel="noopener">Published · DOI</a>
+          </div>
+          <p class="kicker" style="margin:14px 0 8px">Preprint</p>
+          <div class="pub">
+            <div class="t">Groundwater Conservation without Exclusion? A Cluster-Randomized Trial of Access-Conditioned Provider Incentives in Bangladesh</div>
+            <div class="a">SSRN Preprint, January 2026</div>
+            <a class="tag" href="https://doi.org/10.2139/ssrn.7641831" target="_blank" rel="noopener">Preprint · DOI</a>
+          </div>
+          <p class="kicker" style="margin:14px 0 8px">Conference</p>
+          <div class="pub">
+            <div class="t">Community-based waste disposal behavior and solid waste mismanagement in the Barnoi River, Rajshahi: a TPB approach</div>
+            <div class="a">Yeasmin, N., Mridul, M. A. R., Hasan, M. M., Ahmed, M. S., &amp; <b>Rahman, M. J.</b> ISEE 2026, RUET.</div>
+            <span class="tag ok">Presented</span>
+          </div>
+          <div class="pno">5</div>
+        </div></div>
+        <div class="face back"><div class="page">
+          <p class="kicker" style="margin:0 0 8px">ICIURP 2027 · conference papers</p>
+          <div class="pub">
+            <div class="t">Flood-resilient affordable housing site plan for char communities in Kazipur, Sirajganj</div>
+            <div class="a"><b>Rahman, M. J.</b>, Faruq, M. O., Sadman, N., Ashrafi, H., Sarker, D., &amp; Salan, M. S. A.</div>
+            <span class="tag">Submitted</span>
+          </div>
+          <div class="pub">
+            <div class="t">A community-oriented recreational space in front of the Divisional Public Library, Rajshahi</div>
+            <div class="a"><b>Rahman, M. J.</b>, Ashik, Mehedi, Noushin, Shakil, Roy, S., &amp; Rahman, N.</div>
+            <span class="tag">Submitted</span>
+          </div>
+          <div class="pub">
+            <div class="t">Present fire safety condition of important commercial buildings in Rajshahi compared with rules and regulations</div>
+            <div class="a"><b>Rahman, M. J.</b>, &amp; Hossain, N.</div>
+            <span class="tag">Submitted</span>
+          </div>
+          <div class="pub">
+            <div class="t">Pedestrian safety, security and accessibility in Rajshahi City</div>
+            <div class="a"><b>Rahman, M. J.</b>, Sarker, D., &amp; Islam, M.</div>
+            <span class="tag">Submitted</span>
+          </div>
+          <div class="pub">
+            <div class="t">ADP investment and Economic Census employment across the districts of Rajshahi Division</div>
+            <div class="a"><b>Rahman, M. J.</b></div>
+            <span class="tag">Submitted</span>
+          </div>
+          <div class="pno">6</div>
+        </div></div>
+      </div>
+
+      <!-- Sheet 4: projects | projects -->
+      <div class="sheet">
+        <div class="face front"><div class="page">
+          <div class="kicker">Chapter five</div>
+          <h2>Research Projects</h2>
+          <div class="rule"></div>
+          <div class="proj"><img src="images/projects/fire-evacuation.svg" alt="Market floor plan with fire exits">
+            <div><div class="k">Undergraduate thesis</div><h3>Fire Evacuation Planning of RDA Market</h3><p>Fire safety assessment and evacuation scenarios, backed by a PRISMA systematic review.</p></div></div>
+          <div class="proj"><img src="images/projects/groundwater.svg" alt="Falling groundwater table">
+            <div><div class="k">Research assistantship</div><h3>Groundwater Depletion, Barind Tract</h3><p>Valuing lost ecosystem services and the externalities of groundwater extraction.</p></div></div>
+          <div class="proj"><img src="images/projects/upazila-plan.svg" alt="Land-use plan">
+            <div><div class="k">Internship</div><h3>Nawabganj Upazila Development Plan</h3><p>Feature digitization, 2D/3D planning databases and community engagement.</p></div></div>
+          <div class="pno">7</div>
+        </div></div>
+        <div class="face back"><div class="page">
+          <div class="proj" style="margin-top:4px"><img src="images/projects/char-housing.svg" alt="Raised houses on a char">
+            <div><div class="k">Site planning</div><h3>Flood-Resilient Char Housing</h3><p>Affordable, flood-resilient site plan for river island communities in Kazipur, Sirajganj.</p></div></div>
+          <div class="proj"><img src="images/projects/pedestrian.svg" alt="Street intersection with crossings">
+            <div><div class="k">Field survey</div><h3>Pedestrian Safety in Rajshahi</h3><p>Safety, security and accessibility at Barnali, Laxmipur and Shaheb Bazar.</p></div></div>
+          <div class="proj"><img src="images/projects/library-landscape.svg" alt="Park plan in front of a library">
+            <div><div class="k">Studio project</div><h3>Library Recreational Landscape</h3><p>A community-oriented public space in front of the Divisional Public Library, Rajshahi.</p></div></div>
+          <div class="pno">8</div>
+        </div></div>
+      </div>
+
+      <!-- Sheet 5: presentations & awards | contact -->
+      <div class="sheet">
+        <div class="face front"><div class="page">
+          <div class="kicker">Chapter six</div>
+          <h2>Presentations &amp; Awards</h2>
+          <div class="rule"></div>
+          <div class="entry"><h3>Master AI Tools for Research</h3><div class="meta">WiseUp Communications · Certificate · 6 Nov 2026</div></div>
+          <div class="entry"><h3>Paper presentation, ISEE 2026</h3><div class="meta">International Symposium on Energy &amp; Environment, RUET · 20 Aug 2026</div></div>
+          <div class="entry"><h3>Internship training sessions</h3><div class="meta">Sheltech Consultants, Nawabganj Upazila Development Plan · Feb–Mar 2026</div></div>
+          <div class="entry"><h3>Workshop: Drone-Based Geospatial Data Collection</h3><div class="meta">Dept. of URP &amp; RUET GIS Club · 13 Dec 2024</div></div>
+          <div class="entry" style="margin-top:20px;padding:12px 14px;background:var(--cover);border-radius:8px">
+            <h3>★ Second Place, Freshers' Debate Competition</h3><div class="meta" style="margin-bottom:0">RUET Debating Club · 2024</div></div>
+          <div class="pno">9</div>
+        </div></div>
+        <div class="face back endpaper"><div class="page">
+          <div class="kicker">Chapter seven</div>
+          <h2>Contact</h2>
+          <div class="rule"></div>
+          <div style="background:rgba(255,255,255,.85);border-radius:10px;padding:18px">
+            <p>Open to research collaboration and graduate study opportunities in urban planning and geoinformatics.</p>
+            <p class="small muted" style="margin:10px 0 4px">Department of Urban &amp; Regional Planning, RUET, Rajshahi-6204, Bangladesh</p>
+            <p style="margin:6px 0 14px;font-weight:600;color:var(--deep)">jehan2723@gmail.com</p>
+            <a class="btn solid" href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=jehan2723@gmail.com" target="_blank" rel="noopener">Email me</a>
+            <button class="btn copy-email" type="button">Copy email</button><br>
+            <a class="btn" href="https://www.linkedin.com/in/jehanrahmanofficial/" target="_blank" rel="noopener">LinkedIn</a>
+            <a class="btn" href="https://www.researchgate.net/profile/Md-Jehan-Rahman" target="_blank" rel="noopener">ResearchGate</a>
+            <a class="btn" href="cv.pdf" target="_blank" rel="noopener">Download CV</a>
+          </div>
+          <div class="pno">10</div>
+        </div></div>
+      </div>
+
+      <!-- Sheet 6: looking ahead | back cover -->
+      <div class="sheet">
+        <div class="face front"><div class="page">
+          <div class="kicker">Epilogue</div>
+          <h2>Looking Ahead</h2>
+          <div class="rule"></div>
+          <p>Next, I plan to pursue a master's degree in urban planning, building on my work in GIS, water and climate risk, and safer public spaces.</p>
+          <p class="quote" style="margin:30px 0 26px">"Good planning starts on the ground: with the people, the data and the places themselves."</p>
+          <p class="small muted">Thank you for reading. Turn the page to close the book, or use the bookmarks to revisit any chapter.</p>
+          <div class="pno">11</div>
+        </div></div>
+        <div class="face back cover" id="backCover">
+          <div class="frame"></div>
+          <div class="inner">
+            <div class="orn" style="margin-top:0">✦</div>
+            <p class="quote" style="font-size:21px;max-width:280px">Planning safer, more resilient cities, one place at a time.</p>
+            <div class="orn">✦</div>
+            <p class="small" style="color:var(--deep);letter-spacing:2px;text-transform:uppercase">Md. Jehan Rahman</p>
+            <p class="small muted" style="margin-top:4px">mdjehanrahman.github.io</p>
+          </div>
+          <div class="foot">© 2026 Md. Jehan Rahman · All rights reserved</div>
         </div>
-        <div class="panel" style="margin-top:16px">
-          <h3>News</h3>
-          <ul class="news">
-            <li><span class="date">Nov 2026</span><span>Completed "Master AI Tools for Research" (WiseUp Communications).</span></li>
-            <li><span class="date">Nov 2026</span><span>Fire safety paper submitted to ICIURP 2027.</span></li>
-            <li><span class="date">Aug 2026</span><span>Presented a paper on Barnoi River solid waste at ISEE 2026, RUET.</span></li>
-            <li><span class="date">2026</span><span>Journal article on Purbachal New Town published in <i>City and Environment Interactions</i>.</span></li>
-            <li><span class="date">Mar 2026</span><span>Completed internship at Sheltech Consultants on the Nawabganj Upazila Development Plan.</span></li>
-          </ul>
-        </div>
       </div>
-    </div>
-  </section>
 
-  <section id="education">
-    <h2>Education</h2>
-    <div class="entry">
-      <div class="logo"><img src="images/ruet.jpg" alt="RUET"></div>
-      <div>
-        <h3>Bachelor of Urban &amp; Regional Planning (BURP)</h3>
-        <div class="org">Rajshahi University of Engineering &amp; Technology, Rajshahi, Bangladesh</div>
-        <div class="when">2023 – 2027 (expected) · CGPA 3.73 / 4.00</div>
-        <ul><li>Thesis: Fire Evacuation Planning of RDA Market, Rajshahi (Supervisor: Nazia Hossain)</li></ul>
-      </div>
     </div>
-    <div class="entry">
-      <div class="logo">HSC</div>
-      <div>
-        <h3>Higher Secondary Certificate (HSC), Science</h3>
-        <div class="org">Khulna Public College, Khulna, Bangladesh</div>
-        <div class="when">2021 · GPA 5.00 / 5.00</div>
-      </div>
-    </div>
-    <div class="entry">
-      <div class="logo">SSC</div>
-      <div>
-        <h3>Secondary School Certificate (SSC), Science</h3>
-        <div class="org">Khulna Public College, Khulna, Bangladesh</div>
-        <div class="when">2019 · GPA 5.00 / 5.00</div>
-      </div>
-    </div>
-  </section>
+  </div>
+</div>
 
-  <section id="experience">
-    <h2>Experience</h2>
-    <div class="entry">
-      <div class="logo"><img src="images/ruet.jpg" alt="RUET"></div>
-      <div>
-        <h3>Undergraduate Research Assistant</h3>
-        <div class="org">Department of Urban &amp; Regional Planning, RUET · Rajshahi</div>
-        <div class="when">Oct 2025 – Jun 2026</div>
-        <ul>
-          <li>Project: <i>Valuing Ecosystem Services Lost Due to Groundwater Depletion in the Barind Tract</i> (Supervisor: Sumita Roy, Assistant Professor)</li>
-          <li>Field surveys, site visits, FGDs and KIIs with stakeholders</li>
-          <li>Prepared Land Use/Land Cover (LULC) maps using GIS and remote sensing</li>
-          <li>Cleaned and preprocessed primary and secondary datasets; supported the literature review</li>
-        </ul>
-      </div>
-    </div>
-    <div class="entry">
-      <div class="logo"><img src="images/ruet.jpg" alt="RUET"></div>
-      <div>
-        <h3>Undergraduate Research Assistant</h3>
-        <div class="org">Department of Urban &amp; Regional Planning, RUET · Rajshahi</div>
-        <div class="when">Oct 2025 – Jun 2026</div>
-        <ul>
-          <li>Project: <i>Valuing Economic and Environmental Externalities of Groundwater Extraction in the Barind Tract</i> (Supervisor: Md. Sakib Zubayer, Assistant Professor)</li>
-          <li>Field visits, surveys, FGDs and KIIs</li>
-          <li>Organized, cleaned and preprocessed datasets; supported analysis of economic and environmental externalities</li>
-        </ul>
-      </div>
-    </div>
-    <div class="entry">
-      <div class="logo">SCL</div>
-      <div>
-        <h3>Intern</h3>
-        <div class="org">Sheltech Consultants (Pvt.) Ltd. · Dhaka</div>
-        <div class="when">Feb – Mar 2026</div>
-        <ul>
-          <li>Project: Review &amp; Update of Nawabganj Upazila Development Plan (UTMIDP / UMPR-2)</li>
-          <li>Digitized physical features and managed 2D and 3D planning databases</li>
-          <li>Supported a data-sharing workshop, public hearings and community engagement sessions</li>
-        </ul>
-      </div>
-    </div>
-  </section>
-
-  <section id="publications">
-    <h2>Publications</h2>
-
-    <div class="pub-group">
-      <h3>Peer-Reviewed Journal Articles <span class="count">1</span></h3>
-      <details class="pub"><summary>
-        <span class="num">1</span>
-        <span><span class="t">A critical evaluation of Purbachal New Town's planning and implementation for effective decentralization of Dhaka</span><br>
-        <span class="a">Mahfuj, I. I., Tamim, N. F., Sultana, N., &amp; <b>Rahman, M. J.</b> (2026). <i>City and Environment Interactions</i>, 30, 100358.</span><br><span class="more">Show details</span></span>
-        <span class="status" style="background:#e2f2ef;color:#0f7b6c">Published</span></summary>
-        <div class="abs">DOI: <a href="https://doi.org/10.1016/j.cacint.2026.100358" target="_blank" rel="noopener">10.1016/j.cacint.2026.100358</a></div>
-      </details>
-    </div>
-
-    <div class="pub-group">
-      <h3>Preprints <span class="count">1</span></h3>
-      <details class="pub"><summary>
-        <span class="num">1</span>
-        <span><span class="t">Groundwater Conservation without Exclusion? A Cluster-Randomized Trial of Access-Conditioned Provider Incentives in Bangladesh</span><br>
-        <span class="a">SSRN Preprint, January 2026</span><br><span class="more">Show details</span></span>
-        <span class="status" style="background:#e7eef3;color:#13283a">Preprint</span></summary>
-        <div class="abs">DOI: <a href="https://doi.org/10.2139/ssrn.7641831" target="_blank" rel="noopener">10.2139/ssrn.7641831</a></div>
-      </details>
-    </div>
-
-    <div class="pub-group">
-      <h3>Conference Papers <span class="count">6</span></h3>
-      <details class="pub"><summary>
-        <span class="num">1</span>
-        <span><span class="t">A Community Based Waste Disposal Behavior Analysis and Solid Waste Mismanagement in the Barnoi River, Rajshahi: A Theory Based Planned (TPB) Approach</span><br>
-        <span class="a">Yeasmin, N., Mridul, M. A. R., Hasan, M. M., Ahmed, M. S., &amp; <b>Rahman, M. J.</b> (2026). International Symposium on Energy &amp; Environment (ISEE 2026), Paper ID 121, RUET.</span><br><span class="more">Show details</span></span>
-        <span class="status" style="background:#e2f2ef;color:#0f7b6c">Presented</span></summary>
-        <div class="abs">Presented at ISEE 2026, Rajshahi University of Engineering &amp; Technology, 20 August 2026.</div>
-      </details>
-      <details class="pub"><summary>
-        <span class="num">2</span>
-        <span><span class="t">Flood-resilient affordable housing site plan for char communities in Kazipur, Sirajganj</span><br>
-        <span class="a"><b>Rahman, M. J.</b>, Faruq, M. O., Sadman, N., Ashrafi, H., Sarker, D., &amp; Salan, M. S. A. ICIURP 2027.</span><br><span class="more">Show details</span></span>
-        <span class="status">Submitted</span></summary>
-        <div class="abs">First and corresponding author. An affordable, flood-resilient housing layout for char (river island) communities.</div>
-      </details>
-      <details class="pub"><summary>
-        <span class="num">3</span>
-        <span><span class="t">A community-oriented recreational space in front of the Divisional Public Library, Rajshahi</span><br>
-        <span class="a"><b>Rahman, M. J.</b>, Ashik, Mehedi, Noushin, Shakil, Roy, S., &amp; Rahman, N. ICIURP 2027.</span><br><span class="more">Show details</span></span>
-        <span class="status">Submitted</span></summary>
-        <div class="abs">First and corresponding author. A landscape design proposal developed in the URP 3216 studio.</div>
-      </details>
-      <details class="pub"><summary>
-        <span class="num">4</span>
-        <span><span class="t">Present fire safety condition of important commercial buildings in Rajshahi compared with rules and regulations</span><br>
-        <span class="a"><b>Rahman, M. J.</b>, &amp; Hossain, N. ICIURP 2027.</span><br><span class="more">Show details</span></span>
-        <span class="status">Submitted</span></summary>
-        <div class="abs">Assesses RDA Market, New Market and Theme Omar Plaza against fire safety rules, using regulatory review and field visits.</div>
-      </details>
-      <details class="pub"><summary>
-        <span class="num">5</span>
-        <span><span class="t">Pedestrian safety, security and accessibility in Rajshahi City</span><br>
-        <span class="a"><b>Rahman, M. J.</b>, Sarker, D., &amp; Islam, M. ICIURP 2027.</span><br><span class="more">Show details</span></span>
-        <span class="status">Submitted</span></summary>
-        <div class="abs">Survey-based evaluation of pedestrian conditions at Barnali, Laxmipur and Shaheb Bazar.</div>
-      </details>
-      <details class="pub"><summary>
-        <span class="num">6</span>
-        <span><span class="t">ADP investment and Economic Census employment across the districts of Rajshahi Division</span><br>
-        <span class="a"><b>Rahman, M. J.</b> ICIURP 2027.</span><br><span class="more">Show details</span></span>
-        <span class="status">Submitted</span></summary>
-        <div class="abs">Compares public development spending with employment patterns across districts.</div>
-      </details>
-    </div>
-  </section>
-
-  <section id="research">
-    <h2>Research Projects</h2>
-    <div class="proj-grid">
-      <div class="proj"><div class="img"><img src="images/projects/fire-evacuation.svg" alt="Illustration of a market floor plan with fire exits and evacuation routes"></div><div class="b">
-        <div class="k">Undergraduate thesis</div>
-        <h3>Fire Evacuation Planning of RDA Market, Rajshahi</h3>
-        <p>Existing fire safety assessment and evacuation scenario modelling, supported by a PRISMA systematic literature review.</p>
-      </div></div>
-      <div class="proj"><div class="img"><img src="images/projects/groundwater.svg" alt="Illustration of a falling groundwater table under farmland"></div><div class="b">
-        <div class="k">Research assistantship</div>
-        <h3>Groundwater Depletion in the Barind Tract</h3>
-        <p>Valuing lost ecosystem services and the economic and environmental externalities of groundwater extraction.</p>
-      </div></div>
-      <div class="proj"><div class="img"><img src="images/projects/upazila-plan.svg" alt="Illustration of a land-use plan with roads and a river"></div><div class="b">
-        <div class="k">Internship</div>
-        <h3>Nawabganj Upazila Development Plan</h3>
-        <p>Feature digitization, 2D/3D planning databases and community engagement with Sheltech Consultants.</p>
-      </div></div>
-      <div class="proj"><div class="img"><img src="images/projects/char-housing.svg" alt="Illustration of raised houses on a river char"></div><div class="b">
-        <div class="k">Site planning</div>
-        <h3>Flood-Resilient Housing for Char Communities</h3>
-        <p>Affordable, flood-resilient housing site plan for river island communities in Kazipur, Sirajganj.</p>
-      </div></div>
-      <div class="proj"><div class="img"><img src="images/projects/pedestrian.svg" alt="Illustration of a street intersection with zebra crossings"></div><div class="b">
-        <div class="k">Field survey</div>
-        <h3>Pedestrian Safety in Rajshahi City</h3>
-        <p>Safety, security and accessibility for pedestrians at Barnali, Laxmipur and Shaheb Bazar.</p>
-      </div></div>
-      <div class="proj"><div class="img"><img src="images/projects/library-landscape.svg" alt="Illustration of a park plan in front of a library"></div><div class="b">
-        <div class="k">Studio project</div>
-        <h3>Recreational Landscape, Divisional Public Library</h3>
-        <p>A community-oriented recreational space in front of the Divisional Public Library, Rajshahi.</p>
-      </div></div>
-    </div>
-  </section>
-
-  <section id="presentations">
-    <h2>Presentations, Workshops &amp; Certifications</h2>
-    <div class="entry"><div class="logo">AI</div><div>
-      <h3>Master AI Tools for Research</h3>
-      <div class="org">WiseUp Communications · Certificate of Achievement · Online</div>
-      <div class="when">6 November 2026</div>
-    </div></div>
-    <div class="entry"><div class="logo">ISEE</div><div>
-      <h3>Paper presentation, International Symposium on Energy &amp; Environment (ISEE 2026)</h3>
-      <div class="org">Rajshahi University of Engineering &amp; Technology · Rajshahi</div>
-      <div class="when">20 August 2026</div>
-    </div></div>
-    <div class="entry"><div class="logo">SCL</div><div>
-      <h3>Internship Training Sessions</h3>
-      <div class="org">Sheltech Consultants (Pvt.) Ltd., Nawabganj Upazila Development Plan · Dhaka</div>
-      <div class="when">February – March 2026</div>
-    </div></div>
-    <div class="entry"><div class="logo">GIS</div><div>
-      <h3>Workshop: Drone-Based Geospatial Data Collection and Processing</h3>
-      <div class="org">Department of URP, RUET with RUET GIS Club; conducted by Tiller · Rajshahi</div>
-      <div class="when">13 December 2024</div>
-    </div></div>
-  </section>
-
-  <section id="awards">
-    <h2>Awards &amp; Achievements</h2>
-    <div class="entry"><div class="logo">★</div><div>
-      <h3>Second Place, Freshers' Debate Competition</h3>
-      <div class="org">RUET Debating Club, Rajshahi University of Engineering &amp; Technology</div>
-      <div class="when">2024</div>
-    </div></div>
-  </section>
-
-  <section id="skills">
-    <h2>Technical Skills</h2>
-    <div class="proj-grid">
-      <div class="panel"><h3>Geospatial &amp; Remote Sensing</h3><p style="color:var(--muted);font-size:15px">GIS, LULC mapping, feature digitization, 2D/3D spatial databases, drone-based data collection</p></div>
-      <div class="panel"><h3>Research Methods</h3><p style="color:var(--muted);font-size:15px">Field and questionnaire surveys, FGDs, KIIs, PRISMA systematic literature review</p></div>
-      <div class="panel"><h3>Analysis</h3><p style="color:var(--muted);font-size:15px">SPSS (statistical), ATLAS.ti (qualitative)</p></div>
-      <div class="panel"><h3>Design &amp; Drafting</h3><p style="color:var(--muted);font-size:15px">AutoCAD, SketchUp, Canva, Microsoft Office</p></div>
-    </div>
-  </section>
-
-  <section id="contact">
-    <div class="contact">
-      <h2>Get In Touch</h2>
-      <p>Open to research collaboration and graduate study opportunities in urban planning and geoinformatics.</p>
-      <p>Department of Urban &amp; Regional Planning, RUET, Rajshahi-6204, Bangladesh</p>
-      <p><strong style="color:#fff">jehan2723@gmail.com</strong></p>
-      <div class="btns">
-        <a class="btn primary" href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=jehan2723@gmail.com" target="_blank" rel="noopener">Email Me</a>
-        <button class="btn ghost copy-email" type="button">Copy email</button>
-        <a class="btn ghost" href="https://www.linkedin.com/in/jehanrahmanofficial/" target="_blank" rel="noopener">LinkedIn</a>
-        <a class="btn ghost" href="https://www.researchgate.net/profile/Md-Jehan-Rahman" target="_blank" rel="noopener">ResearchGate</a>
-      </div>
-    </div>
-    <footer>© 2026 Md. Jehan Rahman. All rights reserved.</footer>
-  </section>
-
-</main>
+<div class="controls" id="controls">
+  <button class="nav" id="prev" aria-label="Previous page">‹</button>
+  <span class="ind" id="ind">Cover</span>
+  <button class="nav" id="next" aria-label="Next page">›</button>
+  <a href="classic.html">Simple version</a>
+</div>
 
 <script>
-  var side=document.getElementById('side'), btn=document.getElementById('menuBtn');
-  btn.addEventListener('click',function(){var o=side.classList.toggle('open');btn.textContent=o?'Close':'Menu';});
-  document.querySelectorAll('#nav a').forEach(function(a){a.addEventListener('click',function(){side.classList.remove('open');btn.textContent='Menu';});});
-  var links=[].slice.call(document.querySelectorAll('#nav a'));
-  var secs=links.map(function(a){return document.querySelector(a.getAttribute('href'));});
-  window.addEventListener('scroll',function(){
-    var y=window.scrollY+120,cur=0;
-    secs.forEach(function(s,i){if(s&&s.offsetTop<=y)cur=i;});
-    links.forEach(function(a,i){a.classList.toggle('active',i===cur);});
+(function(){
+  var W=420,H=600;
+  var book=document.getElementById('book'), sheets=[].slice.call(book.querySelectorAll('.sheet'));
+  var n=sheets.length, cur=0, busy=false;
+  var intro=document.getElementById('intro'), cb=document.getElementById('cb');
+  var marksEl=document.getElementById('marks'), controls=document.getElementById('controls');
+
+  // bookmarks: label, target page, x position (px along the top), colour class
+  var marks=[
+    ['About',1,'c1'],['Education',2,'c2'],['Experience',3,'c3'],['Publications',5,'c1'],
+    ['Projects',7,'c2'],['Awards',9,'c3'],['Contact',10,'c4'],['Ahead',11,'c1']
+  ];
+  marks.forEach(function(m,i){
+    var b=document.createElement('button');
+    b.className='mark '+m[2]; b.textContent=m[0]; b.dataset.page=m[1];
+    b.style.left=(20+i*98)+'px';
+    b.addEventListener('click',function(){goToPage(+m[1]);});
+    marksEl.appendChild(b);
   });
-  document.querySelectorAll('.copy-email').forEach(function(b){b.addEventListener('click',function(){
-    var t=b.textContent;
-    function done(){b.textContent='Copied!';setTimeout(function(){b.textContent=t;},1500);}
-    try{navigator.clipboard.writeText('jehan2723@gmail.com').then(done,function(){prompt('Copy my email:','jehan2723@gmail.com');});}
-    catch(e){prompt('Copy my email:','jehan2723@gmail.com');}
-  });});
+
+  function stateForPage(p){ return p%2===1 ? (p+1)/2 : p/2+1; }
+
+  function setZ(){
+    sheets.forEach(function(s,i){ s.style.zIndex = i<cur ? (i+1) : (n-i+n); });
+  }
+  function layout(){
+    book.classList.toggle('closed',cur===0);
+    book.classList.toggle('end',cur===n);
+    book.classList.toggle('open',cur>0&&cur<n);
+    setZ();
+    var lbl = cur===0?'Cover':cur===n?'Back cover':(cur===1?'Contents · 1':(2*cur-2)+' – '+(2*cur-1));
+    document.getElementById('ind').textContent=lbl;
+    document.getElementById('prev').disabled=cur===0;
+    document.getElementById('next').disabled=cur===n;
+    // active bookmark: the latest bookmark whose page is visible or before
+    var visible=[2*cur-2,2*cur-1];
+    var act=-1;
+    marks.forEach(function(m,i){ if(visible.indexOf(m[1])>-1 && act<0) act=i; });
+    [].forEach.call(marksEl.children,function(el,i){el.classList.toggle('active',i===act);});
+  }
+  function flipTo(target,done){
+    if(target<0||target>n||target===cur){ if(done)done(); return; }
+    var fwd=target>cur;
+    var s = fwd? sheets[cur] : sheets[cur-1];
+    s.style.zIndex=200;
+    if(fwd){ s.classList.add('flipped'); cur++; } else { s.classList.remove('flipped'); cur--; }
+    book.classList.toggle('closed',cur===0);
+    book.classList.toggle('end',cur===n);
+    book.classList.toggle('open',cur>0&&cur<n);
+    setTimeout(function(){ layout(); flipTo(target,done); }, cur===target?520:170);
+  }
+  function go(t){ if(busy)return; busy=true; flipTo(t,function(){busy=false;layout();}); }
+  function goToPage(p){ go(stateForPage(p)); }
+
+  document.getElementById('next').onclick=function(){go(cur+1);};
+  document.getElementById('prev').onclick=function(){go(cur-1);};
+  document.addEventListener('keydown',function(e){
+    if(e.key==='ArrowRight')go(cur+1);
+    if(e.key==='ArrowLeft')go(cur-1);
+  });
+  sheets.forEach(function(s,i){
+    s.querySelector('.front').addEventListener('click',function(e){
+      if(e.target.closest('a,button'))return; if(i===cur)go(cur+1);
+    });
+    s.querySelector('.back').addEventListener('click',function(e){
+      if(e.target.closest('a,button'))return; if(i===cur-1)go(cur-1);
+    });
+  });
+  [].forEach.call(document.querySelectorAll('.toc a'),function(a){
+    a.addEventListener('click',function(e){e.stopPropagation();goToPage(+a.dataset.page);});
+  });
+  [].forEach.call(document.querySelectorAll('.copy-email'),function(b){
+    b.addEventListener('click',function(e){
+      e.stopPropagation(); var t=b.textContent;
+      function ok(){b.textContent='Copied!';setTimeout(function(){b.textContent=t;},1500);}
+      try{navigator.clipboard.writeText('jehan2723@gmail.com').then(ok,function(){prompt('Copy my email:','jehan2723@gmail.com');});}
+      catch(err){prompt('Copy my email:','jehan2723@gmail.com');}
+    });
+  });
+
+  // fit to screen
+  function fit(){
+    var s=Math.min(1.12,(window.innerWidth-60)/(2*W+28),(window.innerHeight-130)/(H+70));
+    document.documentElement.style.setProperty('--scale',Math.max(.3,s));
+  }
+  window.addEventListener('resize',fit); fit();
+
+  // intro: back cover -> spin to front -> open to first page
+  document.getElementById('cbFront').innerHTML=document.getElementById('coverFace').innerHTML;
+  document.getElementById('cbBack').innerHTML=document.getElementById('backCover').innerHTML;
+  layout();
+  var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function reveal(){
+    intro.classList.add('gone'); book.classList.add('show');
+    marksEl.classList.add('show'); controls.classList.add('show');
+    setTimeout(function(){ go(1); }, reduce?0:450);
+  }
+  if(reduce){ reveal(); }
+  else{
+    setTimeout(function(){ cb.classList.add('spin'); },700);
+    cb.addEventListener('animationend',function(){ setTimeout(reveal,250); });
+  }
+})();
 </script>
 </body>
 </html>
