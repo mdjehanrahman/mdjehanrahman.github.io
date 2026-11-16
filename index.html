@@ -154,6 +154,18 @@
   .vtab.on,.vtab.on:hover{cursor:default;transform:translateY(4px);box-shadow:inset 0 2px 5px rgba(0,0,0,.32);text-decoration:none}
   @keyframes press{0%{transform:translateY(0)}55%{transform:translateY(6px)}100%{transform:translateY(4px)}}
 
+  /* phone reader: one flat page at a time, turned like a book page */
+  .mreader{display:none}
+  body.m .book{display:none}
+  body.m .mreader{display:block;position:absolute;inset:0;perspective:1400px;-webkit-perspective:1400px;overflow:visible;z-index:5}
+  .mpg{position:absolute;inset:0;background:var(--paper);overflow:hidden;transform-origin:left center;-webkit-transform-origin:left center;
+    backface-visibility:hidden;-webkit-backface-visibility:hidden;will-change:transform}
+  .mpg .clip{position:absolute;left:0;top:0;transform-origin:0 0;-webkit-transform-origin:0 0}
+  .mpg .clip .face{transform:none !important;box-shadow:none !important;border-radius:0 !important;backface-visibility:visible;-webkit-backface-visibility:visible}
+  .mpg .shade{position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(0,0,0,.28),rgba(0,0,0,.06) 60%,rgba(0,0,0,.14));opacity:0}
+  .mpg.turn{transition:transform .62s cubic-bezier(.45,.05,.55,.95);box-shadow:0 0 18px rgba(0,0,0,.18)}
+  .mpg.turn .shade{transition:opacity .62s ease}
+
   /* mobile-only parts hidden on desktop */
   .mbar,.drawer,.scrim,.hint{display:none}
 
@@ -175,6 +187,12 @@
   body.m .vtabs.pop{transform:translateX(-50%) translateY(16px)}
   body.m .vtabs.pop.in{transform:translateX(-50%)}
   body.m .vtab{height:30px;padding:0 13px;font-size:12px;border-radius:10px}
+  /* phone: the version you are in stands forward; the other sits pressed back */
+  body.m .vtabs .vtab:not(.on),body.m .vtabs .vtab:not(.on):hover{transform:translateY(3px) scale(.96);box-shadow:inset 0 2px 5px rgba(0,0,0,.32);opacity:.92}
+  body.m .vtabs .vtab.on{transform:translateY(-2px) scale(1.06);animation:rise .7s .35s ease-out both}
+  body.m .vtabs .vtab.on:first-child{box-shadow:0 4px 0 #13502d}
+  body.m .vtabs .vtab.on:last-child{box-shadow:0 4px 0 #8e1c1c}
+  @keyframes rise{0%{transform:translateY(3px) scale(.96)}60%{transform:translateY(-5px) scale(1.1)}100%{transform:translateY(-2px) scale(1.06)}}
   
   body.m .drawer{display:block;position:fixed;top:0;bottom:0;left:0;width:min(82vw,320px);background:#fff;z-index:200;padding:22px 18px;
     transform:translateX(-102%);transition:transform .35s cubic-bezier(.3,.8,.3,1);box-shadow:none;overflow-y:auto}
@@ -483,7 +501,7 @@
     return chapters.map(function(c){
       var li=document.createElement('li'), b=document.createElement('button');
       b.innerHTML='<span>'+c[0].replace('&','&amp;')+'</span><span class="pg">Page '+c[3]+'</span>';
-      b.addEventListener('click',function(){ closeDrawer(); if(mobile){ var f=order(c[1],c[2])>order(cur,side); setTimeout(function(){ mTurn(c[1],c[2],f); },300); return; } side=c[2]; go(c[1]); });
+      b.addEventListener('click',function(){ closeDrawer(); if(mobile){ setTimeout(function(){ mGo(mIndex(c[1],c[2])); },300); return; } side=c[2]; go(c[1]); });
       li.appendChild(b); el.appendChild(li); return b;
     });
   }
@@ -546,74 +564,47 @@
     flipTo(t,function(){ busy=false; layout(); if(cb2)cb2(); if(queued!==null){ var q=queued; queued=null; go(q);} });
   }
 
-  /* ----- phone: every page change is a page turn (no sliding) ----- */
-  function visibleFace(){
-    if(cur===0) return sheets[0].querySelector('.front');
-    if(cur===n) return sheets[n-1].querySelector('.back');
-    return side==='R' ? sheets[cur].querySelector('.front') : sheets[cur-1].querySelector('.back');
-  }
-  function snapTo(c,sd){
-    document.body.classList.add('noanim');
-    sheets.forEach(function(sh,i){ sh.classList.toggle('flipped', i<c); });
-    cur=c; side=sd; layout(); vp.offsetHeight;
-    requestAnimationFrame(function(){ requestAnimationFrame(function(){ document.body.classList.remove('noanim'); }); });
-  }
-  function makeLeaf(face){
-    var r=face.getBoundingClientRect();
-    var wrap=document.createElement('div'); wrap.className='mturn';
-    wrap.style.left=r.left+'px'; wrap.style.top=r.top+'px'; wrap.style.width=r.width+'px'; wrap.style.height=r.height+'px';
-    var leaf=document.createElement('div'); leaf.className='leaf';
+  /* ----- phone: flat reader, one page at a time, every change is a page turn ----- */
+  var mr=document.createElement('div'); mr.className='mreader'; mr.id='mreader'; vbox.appendChild(mr);
+  var mfaces=[];   // cover, page 1 ... page 12, The End, back cover (the blank page is left out)
+  sheets.forEach(function(sh,i){ mfaces.push(sh.querySelector('.front')); if(i>0) mfaces.push(sh.querySelector('.back')); });
+  var mi=0, mbusy=false, mready=false;
+  function mState(k){ if(k===0) return [0,'R']; if(k===mfaces.length-1) return [n,'R']; return k%2 ? [(k+1)/2,'R'] : [k/2+1,'L']; }
+  function mIndex(c,sd){ if(c===0) return 0; if(c===n) return mfaces.length-1; return sd==='R' ? 2*c-1 : 2*(c-1); }
+  function mPage(k){
+    var pg=document.createElement('div'); pg.className='mpg';
     var clip=document.createElement('div'); clip.className='clip';
-    clip.style.width=W+'px'; clip.style.height=H+'px'; clip.style.transform='scale('+(r.width/W)+')';
-    var c=face.cloneNode(true); c.removeAttribute('id'); c.style.position='absolute'; c.style.inset='0';
-    clip.appendChild(c);
-    var fr=document.createElement('div'); fr.className='fr'; fr.appendChild(clip);
-    var sh=document.createElement('div'); sh.className='shade'; fr.appendChild(sh);
-    var bk=document.createElement('div'); bk.className='bk';
-    leaf.appendChild(fr); leaf.appendChild(bk);
-    wrap.appendChild(leaf); document.body.appendChild(wrap);
-    return {wrap:wrap,leaf:leaf};
+    clip.style.width=W+'px'; clip.style.height=H+'px'; clip.style.transform='scale('+scale+')';
+    var f=mfaces[k].cloneNode(true); f.removeAttribute('id'); clip.appendChild(f); pg.appendChild(clip);
+    var sh=document.createElement('div'); sh.className='shade'; pg.appendChild(sh);
+    return pg;
   }
-  var mbusy=false;
-  function mTurn(c,sd,fwd){
-    if(mbusy||(c===cur&&sd===side)) return;
+  function mSync(){ var st=mState(mi); cur=st[0]; side=st[1]; layout(); }
+  function mShow(k){ mi=k; mr.innerHTML=''; mr.appendChild(mPage(k)); mSync(); }
+  function mDone(el,fn){ var fired=false; function f(){ if(fired)return; fired=true; fn(); }
+    el.addEventListener('transitionend',function(e){ if(e.target===el) f(); }); setTimeout(f,720); }
+  function mGo(k){
+    k=Math.max(0,Math.min(mfaces.length-1,k));
+    if(!mready||mbusy||k===mi) return;
     mbusy=true;
-    if(fwd){
-      var a=makeLeaf(visibleFace());             // current page lifts and turns away
-      snapTo(c,sd);
-      requestAnimationFrame(function(){ requestAnimationFrame(function(){
-        a.leaf.classList.add('turning'); a.leaf.style.transform='rotateY(-180deg)'; }); });
-      setTimeout(function(){ a.wrap.remove(); mbusy=false; },820);
-    }else{
-      var under=makeLeaf(visibleFace());          // keep current page visible underneath
-      snapTo(c,sd);
-      var b=makeLeaf(visibleFace());              // previous page turns back in
-      b.leaf.style.transition='none'; b.leaf.style.transform='rotateY(-180deg)'; b.leaf.classList.add('turning');
-      b.leaf.offsetHeight; b.leaf.style.transition='';
-      requestAnimationFrame(function(){ requestAnimationFrame(function(){
-        b.leaf.style.transform='rotateY(0deg)'; b.leaf.classList.remove('turning'); }); });
-      setTimeout(function(){ b.wrap.remove(); under.wrap.remove(); mbusy=false; },820);
+    var old=mr.lastChild, nw=mPage(k);
+    if(k>mi){                                   // forward: current page turns away from its left edge
+      mr.insertBefore(nw,old);
+      old.offsetWidth; old.classList.add('turn');
+      requestAnimationFrame(function(){ old.style.transform='rotateY(-92deg)'; old.querySelector('.shade').style.opacity='1'; });
+      mDone(old,function(){ if(old.parentNode) mr.removeChild(old); mbusy=false; });
+    }else{                                      // back: the earlier page turns back in on top
+      nw.style.transform='rotateY(-92deg)'; nw.querySelector('.shade').style.opacity='1';
+      mr.appendChild(nw); nw.offsetWidth; nw.classList.add('turn');
+      requestAnimationFrame(function(){ nw.style.transform='rotateY(0deg)'; nw.querySelector('.shade').style.opacity='0'; });
+      mDone(nw,function(){ if(old&&old.parentNode) mr.removeChild(old); nw.classList.remove('turn'); nw.style.transform=''; mbusy=false; });
     }
+    mi=k; mSync();
   }
-  function order(c,sd){ return c===0?0 : c===n?999 : (sd==='L'? 2*c-1 : 2*c); }
 
-  /* ----- next / previous (phone: one page at a time; the blank page is skipped) ----- */
-  function next(){
-    if(!mobile){ go(cur+1); return; }
-    if(cur===n||busy) return;
-    if(cur===0){ mTurn(1,'R',true); return; }
-    if(side==='L'){ mTurn(cur,'R',true); return; }
-    if(cur+1===n){ mTurn(n,'R',true); return; }
-    mTurn(cur+1,'L',true);
-  }
-  function prev(){
-    if(!mobile){ go(cur-1); return; }
-    if(cur===0||busy) return;
-    if(cur===n){ mTurn(n-1,'R',false); return; }
-    if(cur===1&&side==='R'){ mTurn(0,'R',false); return; }
-    if(side==='R'){ mTurn(cur,'L',false); return; }
-    mTurn(cur-1,'R',false);
-  }
+  /* ----- next / previous ----- */
+  function next(){ if(!mobile){ go(cur+1); return; } mGo(mi+1); }
+  function prev(){ if(!mobile){ go(cur-1); return; } mGo(mi-1); }
   document.getElementById('next').onclick=next;
   document.getElementById('prev').onclick=prev;
   document.addEventListener('keydown',function(e){ if(e.key==='ArrowRight')next(); if(e.key==='ArrowLeft')prev(); if(e.key==='Escape')closeDrawer(); });
@@ -660,7 +651,7 @@
     });
   });
 
-  window.addEventListener('resize',function(){ fit(); layout(); });
+  window.addEventListener('resize',function(){ var was=mobile; fit(); if(mobile&&mready&&!mbusy){ mShow(mi); } layout(); });
   fit();
 
   /* ----- opening sequence ----- */
@@ -674,7 +665,8 @@
     intro.classList.add('gone'); book.classList.add('show');
     setTimeout(function(){
       side='R';
-      go(1,function(){
+      if(mobile){ mShow(0); mready=true; setTimeout(function(){ mGo(1); },150); }
+      (mobile ? function(f){ setTimeout(f,800); } : function(f){ go(1,f); })(function(){
         if(mobile){
           popIn(['vtabs','burger','cvtab'].filter(function(id){return id!=='cvtab';}).concat([]),200,250);
           document.querySelector('.mcv').classList.add('in');
