@@ -126,6 +126,17 @@
   .contact button.btn.ghost{border:1.5px solid #7fc8bd;color:#bfe7e0}
   .mini{font-size:12px;border:1px solid var(--line);background:#fff;border-radius:5px;padding:1px 8px;margin-left:6px;cursor:pointer;color:var(--accent)}
   .proj .img img{width:100%;height:100%;object-fit:cover;display:block}
+
+  /* version tabs (top right): current = white/black, other = red/white */
+  .vtabs{position:fixed;top:0;right:28px;display:flex;gap:8px;z-index:100;align-items:flex-start}
+  .vtab{display:flex;align-items:center;height:38px;padding:0 18px;text-decoration:none;
+    font-family:Georgia,"Times New Roman",serif;font-size:13.5px;letter-spacing:.3px;border-radius:0 0 9px 9px;
+    background:#c62828;color:#fff;border:1.5px solid #c62828;border-top:none;
+    box-shadow:0 3px 10px rgba(0,0,0,.12);transition:height .25s, transform .25s}
+  .vtab:hover{text-decoration:none;transform:translateY(3px)}
+  .vtab.on{background:#fff;color:#111;border-color:#cfd5de;height:44px;cursor:default}
+  .vtab.on:hover{transform:none}
+  @media (max-width:900px){ .vtabs{top:56px;right:12px} .vtab{font-size:12.5px;padding:0 13px;height:34px} .vtab.on{height:40px} }
 </style>
 </head>
 <body>
@@ -473,5 +484,9 @@
     catch(e){prompt('Copy my email:','jehan2723@gmail.com');}
   });});
 </script>
+<nav class="vtabs" aria-label="Site version">
+  <a class="vtab vt-book" href="index.html">Book version</a>
+  <a class="vtab vt-simple on" href="classic.html" aria-current="page">Simple version</a>
+</nav>
 </body>
 </html>
