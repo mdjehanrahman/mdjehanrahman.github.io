@@ -63,6 +63,8 @@
   .stack-r{position:absolute;left:calc(var(--W) * 2 - 2px);top:4px;width:6px;height:calc(var(--H) - 8px);background:repeating-linear-gradient(90deg,#fff 0 1px,#e2ded6 1px 2px);border-radius:0 3px 3px 0;opacity:0;transition:opacity .4s}
   .stack-l{position:absolute;left:-4px;top:4px;width:6px;height:calc(var(--H) - 8px);background:repeating-linear-gradient(90deg,#e2ded6 0 1px,#fff 1px 2px);border-radius:3px 0 0 3px;opacity:0;transition:opacity .4s}
   .book.open .board,.book.open .spine-line,.book.open .stack-r,.book.open .stack-l{opacity:1}
+  /* opening the cover: the left (inside) board appears only once the cover has turned over */
+  .book.open .board.l,.book.open .spine-line,.book.open .stack-l{transition:opacity .25s .5s}
 
   /* ================= formal page typography (small, black) ================= */
   .page{position:absolute;inset:0;padding:62px 50px 56px;cursor:pointer;color:var(--text)}
