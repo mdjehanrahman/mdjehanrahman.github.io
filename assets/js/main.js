@@ -22,64 +22,98 @@
   function colour(h){ h=Math.max(0,Math.min(1,h)); for(var i=1;i<ramp.length;i++){ if(h<=ramp[i][0]){ var a=ramp[i-1],b=ramp[i],t=(h-a[0])/(b[0]-a[0]);
     return [a[1][0]+(b[1][0]-a[1][0])*t,a[1][1]+(b[1][1]-a[1][1])*t,a[1][2]+(b[1][2]-a[1][2])*t]; } } return ramp[5][1]; }
 
-  /* ---------- interactive 3D terrain (home hero) ---------- */
+  /* ---------- interactive 3D city model (home hero) ---------- */
   function Terrain(cv){
-    var ctx=cv.getContext('2d'), small=window.innerWidth<700, N=small?44:78, noise=makeNoise(11), H=[], i, j;
-    for(j=0;j<=N;j++){ H[j]=[]; for(i=0;i<=N;i++){
-      var x=i/N, y=j/N, h=noise(x*2.2+3,y*2.2+1,3)*.9+.5;
-      h+=.32*Math.exp(-((x-.62)*(x-.62)+(y-.38)*(y-.38))/.03);           // hill
-      var rv=y-(.55+.12*Math.sin(x*7)); h-=.38*Math.exp(-(rv*rv)/.0025);   // river valley
-      H[j][i]=h; } }
-    var mn=1e9,mx=-1e9; H.forEach(function(r){r.forEach(function(v){mn=Math.min(mn,v);mx=Math.max(mx,v);});});
-    H=H.map(function(r){return r.map(function(v){return (v-mn)/(mx-mn);});});
-    var pins=[[.62,.38,'Groundwater study'],[.25,.58,'Flood housing'],[.78,.72,'Fire safety'],[.35,.22,'Upazila plan']];
-    var yaw=-.7, pitch=.95, auto=true, drag=null, W=0, Hh=0, dpr=Math.min(2,window.devicePixelRatio||1), visible=true, t0=performance.now();
+    var ctx=cv.getContext('2d'), small=window.innerWidth<700, G=small?11:15, noise=makeNoise(23), i, j, k;
+    // ---- build a small planned city: road grid, river, parks, extruded buildings ----
+    function riverY(x){ return .80+.06*Math.sin(x*5.2+.6); }            // river near the southern edge
+    var cells=[], boxes=[], parks=[], water=[];
+    for(j=0;j<G;j++) for(i=0;i<G;i++){
+      var x0=i/G, y0=j/G, cx=x0+.5/G, cy=y0+.5/G, ry=riverY(cx);
+      if(Math.abs(cy-ry)<.065){ water.push([x0,y0]); continue; }
+      var dc=Math.hypot(cx-.46,cy-.42), r=noise(i*.9,j*.9,2);
+      if(r>.42 && dc>.16){ parks.push([x0,y0]); continue; }
+      var dens=Math.max(0,1-dc*2.1), lots=dens>.45?4:(dens>.18?2:1), m=.16/G, w=(1/G-2*m);
+      for(k=0;k<lots;k++){
+        var lx=x0+m+(lots===4?(k%2)*w/2:(lots===2?k*w/2:0)), ly=y0+m+(lots===4?Math.floor(k/2)*w/2:0);
+        var lw=lots===1?w:w/2-m*.4, lh=lots===4?w/2-m*.4:w;
+        var h=.015+Math.pow(dens,1.6)*(.12+.1*(noise(lx*40,ly*40,1)+.5))+(noise(lx*25+9,ly*25,1)+.5)*.018;
+        var nearRiver=Math.abs(cy-ry)<.14;
+        if(nearRiver) h=Math.min(h,.03);
+        boxes.push({x:lx,y:ly,w:lw,d:lh,h:h,flood:nearRiver});
+      }
+    }
+    var pins=[[.46,.42,'Fire safety · market'],[.30,.66,'Pedestrian survey'],[.70,.70,'Flood housing'],[.16,.26,'Groundwater wells']];
+    var yaw=-.62, pitch=1.0, auto=true, drag=null, W=0, Hh=0, dpr=Math.min(2,window.devicePixelRatio||1), visible=true, t0=performance.now(), T=0;
     function size(){ W=cv.clientWidth; Hh=cv.clientHeight; cv.width=W*dpr; cv.height=Hh*dpr; ctx.setTransform(dpr,0,0,dpr,0,0); }
     size(); window.addEventListener('resize',size);
     function proj(x,y,z){
-      var cx=x-.5, cy=y-.5, cz=z*.22;
+      var cx=x-.5, cy=y-.5, cz=z;
       var c=Math.cos(yaw), s=Math.sin(yaw), X=cx*c-cy*s, Y=cx*s+cy*c;
       var cp=Math.cos(pitch), sp=Math.sin(pitch), Y2=Y*cp-cz*sp, Z2=Y*sp+cz*cp;
-      var sc=small?Math.min(W*1.05,Hh*.75):Math.min(W*.47,Hh*.92), d=2.4, f=d/(d+Y2);
-      var ox=small?W*.5:W*.7, oy=small?Hh*.74:Hh*.54;
+      var sc=small?Math.min(W*.92,Hh*.62):Math.min(W*.46,Hh*.9), d=2.6, f=d/(d+Y2);
+      var ox=small?W*.5:W*.73, oy=small?Hh*.82:Hh*.52;
       return [ox+X*sc*f, oy-Z2*sc*f, Y2];
     }
+    function poly(pts,fill,stroke){ ctx.beginPath(); ctx.moveTo(pts[0][0],pts[0][1]); for(var q=1;q<pts.length;q++) ctx.lineTo(pts[q][0],pts[q][1]); ctx.closePath();
+      if(fill){ ctx.fillStyle=fill; ctx.fill(); } if(stroke){ ctx.strokeStyle=stroke; ctx.stroke(); } }
+    function hcol(h,f){ var t=Math.min(1,h/.24), a=[38,92,128], b=[79,209,197], c=[224,182,90], r;
+      r = t<.55 ? a.map(function(v,n){return v+(b[n]-v)*(t/.55);}) : b.map(function(v,n){return v+(c[n]-v)*((t-.55)/.45);});
+      return 'rgb('+(r[0]*f|0)+','+(r[1]*f|0)+','+(r[2]*f|0)+')'; }
     function frame(now){
       if(!visible){ requestAnimationFrame(frame); return; }
-      var dt=Math.min(50,now-t0); t0=now;
-      if(auto&&!reduce) yaw+=dt*0.00012;
+      var dt=Math.min(50,now-t0); t0=now; T+=dt;
+      if(auto&&!reduce) yaw+=dt*0.00009;
       ctx.clearRect(0,0,W,Hh);
-      var P=[]; for(j=0;j<=N;j++){ P[j]=[]; for(i=0;i<=N;i++) P[j][i]=proj(i/N,j/N,H[j][i]); }
-      var q=[]; for(j=0;j<N;j++) for(i=0;i<N;i++){ q.push([ (P[j][i][2]+P[j+1][i+1][2])/2, i, j ]); }
-      q.sort(function(a,b){return b[0]-a[0];});
-      var lx=Math.cos(yaw+2.3), ly=Math.sin(yaw+2.3);
-      for(var k=0;k<q.length;k++){
-        i=q[k][1]; j=q[k][2];
-        var a=P[j][i], b=P[j][i+1], c=P[j+1][i+1], d=P[j+1][i];
-        var h=(H[j][i]+H[j][i+1]+H[j+1][i]+H[j+1][i+1])/4;
-        var dx=(H[j][i+1]-H[j][i])*N*.22, dy=(H[j+1][i]-H[j][i])*N*.22;
-        var shade=Math.max(.6,Math.min(1.18,1-(dx*lx+dy*ly)*.55));
-        var col=colour(h);
-        ctx.fillStyle='rgb('+(col[0]*shade|0)+','+(col[1]*shade|0)+','+(col[2]*shade|0)+')';
-        ctx.beginPath(); ctx.moveTo(a[0],a[1]); ctx.lineTo(b[0],b[1]); ctx.lineTo(c[0],c[1]); ctx.lineTo(d[0],d[1]); ctx.closePath(); ctx.fill();
-        ctx.strokeStyle=ctx.fillStyle; ctx.lineWidth=.6; ctx.stroke();
-        if((i%6===0)||(j%6===0)){ ctx.strokeStyle='rgba(255,255,255,0.10)'; ctx.lineWidth=.5; ctx.beginPath(); if(i%6===0){ctx.moveTo(a[0],a[1]);ctx.lineTo(d[0],d[1]);} if(j%6===0){ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);} ctx.stroke(); }
-      }
-      // pins
-      pins.forEach(function(pn){
-        var gi=Math.round(pn[0]*N), gj=Math.round(pn[1]*N), base=proj(pn[0],pn[1],H[gj][gi]), top=proj(pn[0],pn[1],H[gj][gi]+.55);
-        ctx.strokeStyle='rgba(255,255,255,.8)'; ctx.lineWidth=1.2; ctx.beginPath(); ctx.moveTo(base[0],base[1]); ctx.lineTo(top[0],top[1]); ctx.stroke();
-        ctx.fillStyle='#e0b65a'; ctx.beginPath(); ctx.arc(top[0],top[1],5,0,7); ctx.fill();
-        ctx.fillStyle='rgba(255,255,255,.35)'; ctx.beginPath(); ctx.arc(base[0],base[1],2.5,0,7); ctx.fill();
+      // ground plate
+      var e=.03; poly([proj(-e,-e,0),proj(1+e,-e,0),proj(1+e,1+e,0),proj(-e,1+e,0)],'#0f2036','rgba(79,209,197,.35)');
+      // parks and river
+      parks.forEach(function(p){ var m=.08/G; poly([proj(p[0]+m,p[1]+m,0),proj(p[0]+1/G-m,p[1]+m,0),proj(p[0]+1/G-m,p[1]+1/G-m,0),proj(p[0]+m,p[1]+1/G-m,0)],'rgba(86,160,96,.55)'); });
+      var top=[],bot=[]; for(i=0;i<=40;i++){ var xx=i/40, ry=riverY(xx); top.push(proj(xx,ry-.06,0)); bot.unshift(proj(xx,ry+.06,0)); }
+      poly(top.concat(bot),'rgba(47,127,193,.75)');
+      ctx.strokeStyle='rgba(160,215,255,.35)'; ctx.lineWidth=1; ctx.beginPath(); for(i=0;i<=40;i++){ var p2=proj(i/40,riverY(i/40)+.02*Math.sin(T*.002+i*.5),0); i?ctx.lineTo(p2[0],p2[1]):ctx.moveTo(p2[0],p2[1]); } ctx.stroke();
+      // road grid
+      ctx.lineWidth=1; ctx.strokeStyle='rgba(200,220,240,.16)'; ctx.beginPath();
+      for(i=0;i<=G;i++){ var a1=proj(i/G,0,0),a2=proj(i/G,1,0),b1=proj(0,i/G,0),b2=proj(1,i/G,0); ctx.moveTo(a1[0],a1[1]);ctx.lineTo(a2[0],a2[1]);ctx.moveTo(b1[0],b1[1]);ctx.lineTo(b2[0],b2[1]); }
+      ctx.stroke();
+      // flood-prone zone outline
+      ctx.setLineDash([5,5]); ctx.strokeStyle='rgba(120,190,255,.55)'; ctx.beginPath();
+      for(i=0;i<=40;i++){ var f1=proj(i/40,riverY(i/40)-.14,0); i?ctx.lineTo(f1[0],f1[1]):ctx.moveTo(f1[0],f1[1]); } ctx.stroke(); ctx.setLineDash([]);
+      // scanning plane position (LiDAR-style sweep)
+      var scan=((T*.00012)%1.3)-.15;
+      // buildings, far to near
+      var list=boxes.map(function(bx){ return [proj(bx.x+bx.w/2,bx.y+bx.d/2,0)[2],bx]; }).sort(function(p,q){return q[0]-p[0];});
+      list.forEach(function(it){
+        var bx=it[1], hit=Math.abs(bx.x+bx.w/2-scan)<.035, H0=bx.h*(hit?1.06:1);
+        var c=[[bx.x,bx.y],[bx.x+bx.w,bx.y],[bx.x+bx.w,bx.y+bx.d],[bx.x,bx.y+bx.d]];
+        var B=c.map(function(p){return proj(p[0],p[1],0);}), Tp=c.map(function(p){return proj(p[0],p[1],H0);});
+        for(var sIdx=0;sIdx<4;sIdx++){
+          var n=(sIdx+1)%4, face=[B[sIdx],B[n],Tp[n],Tp[sIdx]];
+          var area=(face[1][0]-face[0][0])*(face[2][1]-face[0][1])-(face[2][0]-face[0][0])*(face[1][1]-face[0][1]);
+          if(area>0) continue;
+          var light=[.72,.86,.62,.78][sIdx];
+          poly(face, bx.flood?'rgba(130,170,210,'+(.55*light+.2)+')':hcol(bx.h,light*(hit?1.35:1)));
+        }
+        poly(Tp, bx.flood?'rgba(190,220,245,.85)':hcol(bx.h,hit?1.45:1.12),'rgba(255,255,255,.12)');
+      });
+      // scan line on the ground
+      if(scan>-.05&&scan<1.05){ var s1=proj(scan,-.02,0), s2=proj(scan,1.02,0); ctx.strokeStyle='rgba(79,209,197,.85)'; ctx.lineWidth=2; ctx.shadowColor='#4fd1c5'; ctx.shadowBlur=12;
+        ctx.beginPath(); ctx.moveTo(s1[0],s1[1]); ctx.lineTo(s2[0],s2[1]); ctx.stroke(); ctx.shadowBlur=0; }
+      // survey pins with pulse
+      pins.forEach(function(pn,pi){
+        var base=proj(pn[0],pn[1],0), tp=proj(pn[0],pn[1],.2), ph=((T*.0012)+pi*.25)%1;
+        ctx.strokeStyle='rgba(224,182,90,'+(1-ph)+')'; ctx.lineWidth=1.5; ctx.beginPath(); ctx.ellipse(base[0],base[1],4+ph*22,(4+ph*22)*.45,0,0,7); ctx.stroke();
+        ctx.strokeStyle='rgba(255,255,255,.75)'; ctx.lineWidth=1.2; ctx.beginPath(); ctx.moveTo(base[0],base[1]); ctx.lineTo(tp[0],tp[1]); ctx.stroke();
+        ctx.fillStyle='#e0b65a'; ctx.beginPath(); ctx.arc(tp[0],tp[1],5,0,7); ctx.fill();
         if(!small){ ctx.font='600 12px Inter,system-ui,sans-serif'; var tw=ctx.measureText(pn[2]).width;
-          ctx.fillStyle='rgba(11,22,38,.78)'; ctx.fillRect(top[0]+9,top[1]-11,tw+14,22);
-          ctx.fillStyle='#e6eef6'; ctx.fillText(pn[2],top[0]+16,top[1]+4); }
+          ctx.fillStyle='rgba(11,22,38,.82)'; ctx.fillRect(tp[0]+9,tp[1]-11,tw+14,22);
+          ctx.fillStyle='#e6eef6'; ctx.fillText(pn[2],tp[0]+16,tp[1]+4); }
       });
       requestAnimationFrame(frame);
     }
     requestAnimationFrame(frame);
     function down(x,y){ drag=[x,y,yaw,pitch]; auto=false; }
-    function move(x,y){ if(!drag)return; yaw=drag[2]+(x-drag[0])*.008; pitch=Math.max(.45,Math.min(1.25,drag[3]+(y-drag[1])*.004)); }
+    function move(x,y){ if(!drag)return; yaw=drag[2]+(x-drag[0])*.008; pitch=Math.max(.55,Math.min(1.3,drag[3]+(y-drag[1])*.004)); }
     function up(){ drag=null; setTimeout(function(){ if(!drag) auto=true; },2500); }
     cv.addEventListener('mousedown',function(e){down(e.clientX,e.clientY);});
     window.addEventListener('mousemove',function(e){move(e.clientX,e.clientY);});
