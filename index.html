@@ -6,6 +6,7 @@
 <title>Md. Jehan Rahman | Portfolio</title>
 <meta name="description" content="Portfolio of Md. Jehan Rahman, Urban & Regional Planning, RUET, Bangladesh. GIS and remote sensing, groundwater, flood resilience and fire safety.">
 <link rel="icon" href="images/photo.jpg">
+<link rel="preload" as="image" href="images/photo.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Playfair+Display:ital,wght@0,500;0,700;1,500&display=swap" rel="stylesheet">
@@ -29,7 +30,7 @@
 
   /* intro closed book */
   .intro{position:absolute;left:calc(var(--W) / 2);top:0;width:var(--W);height:var(--H);perspective:1600px;-webkit-perspective:1600px;z-index:50}
-  .cb{position:relative;width:100%;height:100%;transform-style:preserve-3d;-webkit-transform-style:preserve-3d;transform:rotateY(-180deg) rotateX(8deg) scale(.82)}
+  .cb{position:relative;width:100%;height:100%;will-change:transform;transform-style:preserve-3d;-webkit-transform-style:preserve-3d;transform:rotateY(-180deg) rotateX(8deg) scale(.82)}
   .cb.spin{animation:spin 2.4s cubic-bezier(.45,.05,.25,1) forwards;-webkit-animation:spin 2.4s cubic-bezier(.45,.05,.25,1) forwards}
   @keyframes spin{
     0%{transform:rotateY(-180deg) rotateX(8deg) scale(.82)}
@@ -45,15 +46,15 @@
   .intro.gone{display:none}
 
   /* book */
-  .book{position:absolute;inset:0;transition:transform 1s cubic-bezier(.6,.1,.25,1);visibility:hidden}
-  .book.show{visibility:visible}
+  .book{position:absolute;inset:0;transition:transform 1s cubic-bezier(.6,.1,.25,1);opacity:.001;pointer-events:none}
+  .book.show{opacity:1;pointer-events:auto}
   .book.closed{transform:translateX(calc(var(--W) / -2))}
   .book.end{transform:translateX(calc(var(--W) / 2))}
   .sheet{position:absolute;left:var(--W);top:0;width:var(--W);height:var(--H);transform-origin:left center;
-    transform-style:preserve-3d;-webkit-transform-style:preserve-3d;transition:transform 1s cubic-bezier(.55,.05,.3,1)}
+    transform-style:preserve-3d;-webkit-transform-style:preserve-3d;transition:transform 1s cubic-bezier(.55,.05,.3,1);will-change:transform}
   .sheet.flipped{transform:rotateY(-180deg)}
   .face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;overflow:hidden;background:var(--paper)}
-  .face.front{border-radius:0 5px 5px 0;box-shadow:inset 18px 0 22px -20px rgba(0,0,0,.2) }
+  .face.front{transform:translateZ(0);border-radius:0 5px 5px 0;box-shadow:inset 18px 0 22px -20px rgba(0,0,0,.2) }
   .face.back{transform:rotateY(180deg);border-radius:5px 0 0 5px;box-shadow:inset -18px 0 22px -20px rgba(0,0,0,.2) }
   .board{position:absolute;top:-14px;height:calc(var(--H) + 28px);width:calc(var(--W) + 14px);background:var(--cover);
     border:1.5px solid var(--cover2);opacity:0;transition:opacity .4s}
@@ -112,7 +113,7 @@
   .cover .backline{font-family:"Playfair Display",Georgia,serif;font-style:italic;color:var(--cream);font-size:28px;letter-spacing:1px}
 
   /* pop-in helper */
-  .pop{opacity:0;transform:translateY(16px) scale(.96);transition:opacity .55s ease, transform .55s cubic-bezier(.3,1.5,.5,1)}
+  .pop{opacity:0;will-change:opacity,transform;transform:translateY(16px) scale(.96);transition:opacity .55s ease, transform .55s cubic-bezier(.3,1.5,.5,1)}
   .pop.in{opacity:1;transform:none}
 
   /* desktop contents panel */
@@ -677,10 +678,21 @@
       });
     }, 450);
   }
-  setTimeout(function(){ cb.classList.add('spin'); },700);
   cb.addEventListener('animationend',function(){ setTimeout(reveal,250); });
   cb.addEventListener('webkitAnimationEnd',function(){ setTimeout(reveal,250); });
-  setTimeout(reveal,4200);
+  // wait for fonts and the cover photo, then give the browser two frames to settle before spinning
+  var started=false;
+  function startIntro(){
+    if(started)return; started=true;
+    requestAnimationFrame(function(){ requestAnimationFrame(function(){
+      setTimeout(function(){ cb.classList.add('spin'); setTimeout(reveal,3400); },250);
+    }); });
+  }
+  var waits=[];
+  try{ if(document.fonts&&document.fonts.ready) waits.push(document.fonts.ready); }catch(e){}
+  try{ var im=new Image(); im.src='images/photo.jpg'; if(im.decode) waits.push(im.decode().catch(function(){})); }catch(e){}
+  if(window.Promise&&waits.length){ Promise.all(waits).then(startIntro,startIntro); } else { startIntro(); }
+  setTimeout(startIntro,2500);   // never wait longer than this on a slow connection
 })();
 </script>
 </body>
